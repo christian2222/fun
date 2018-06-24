@@ -15,6 +15,7 @@ public abstract class Model<T extends Page> extends GenericList<T> {
 	public ArrayList<T> sequence;
 	public int countPagefaults;
 
+	public abstract void serveRequest(T request);
 	
 	public Model(int cacheSize, int bgSize, ArrayList<T> sequence) {
 		this.background = new Memory<T>(bgSize);
@@ -115,12 +116,12 @@ public abstract class Model<T extends Page> extends GenericList<T> {
 	
 	protected T getRandomCachePage() {
 		int i = this.getRandomInt(this.cache.getSize());
-		return (T) this.cache.getPageAtIndex(i);
+		return this.cache.getPageAtIndex(i);
 	}
 	
 	protected T getRandomBackgroundPage() {
 		int i = this.getRandomInt(this.background.getSize());
-		return (T) this.background.getPageAtIndex(i);
+		return this.background.getPageAtIndex(i);
 	}
 	
 	public ArrayList<T> getRandomBackgroundSequence(int length) {

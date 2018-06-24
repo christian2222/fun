@@ -5,32 +5,31 @@ import java.util.Date;
 
 import datastructures.*;
 
-public class Lru<T extends Page> extends Random {
+public class Lru<T extends TimePage> extends Random<T> {
 
 	
-	public <U extends TimePage> Lru(ArrayList<U> sequence) {
+	public Lru(ArrayList<T> sequence) {
 		super(sequence);
 	}
 	
 	@Override
-	public void serveRequest(Page request) {
-		TimePage req = (TimePage) request;
-		if(this.cache.hasPage(req)) {
-			int k = this.cache.getPageIndex(req);
+	public void serveRequest(T request) {
+		if(this.cache.hasPage(request)) {
+			int k = this.cache.getPageIndex(request);
 			TimePage slot = (TimePage) this.cache.memory.get(k);
 			slot.refreshTimestamp();
-			System.out.println("Served page "+req+" by Cache.");
+			System.out.println("Served page "+request+" by Cache.");
 		} else {
 			if(this.cache.hasEmptySlot()) {
-				this.cache.add(req);
-				req.refreshTimestamp();
-				System.out.println("Loaded page "+req+" into an empty slot.");
+				this.cache.add(request);
+				request.refreshTimestamp();
+				System.out.println("Loaded page "+request+" into an empty slot.");
 			} else { // removing strategy
 				TimePage p = this.getOldestPage();
-				System.out.println("Replaced page "+p+" by page "+req+" in Cache");
-				this.evictPageFromCache(p);
+				System.out.println("Replaced page "+p+" by page "+request+" in Cache");
+				this.evictPageFromCache((T)p);
 				this.countPagefaults++;
-				this.cache.add(req);
+				this.cache.add(request);
 			}
 		}
 	}

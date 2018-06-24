@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import datastructures.Page;
 
-public class Random<T extends Page> extends Model {
+public class Random<T extends Page> extends Model<T> {
 
 
 	public Random(ArrayList<T> sequence) {
@@ -15,7 +15,7 @@ public class Random<T extends Page> extends Model {
 		super(8,30,length);
 	}
 	
-	public void serveRequest(Page request) {
+	public void serveRequest(T request) {
 		if(this.cache.hasPage(request)) {
 			System.out.println("Served page ["+request+"] by Cache.");
 		} else {
@@ -23,7 +23,7 @@ public class Random<T extends Page> extends Model {
 				this.cache.add(request);
 				System.out.println("Loaded page ["+request+"] into an empty slot.");
 			} else { // removing strategy
-				Page p = this.getRandomCachePage();
+				T p = this.getRandomCachePage();
 				System.out.println("Replaced page ["+p+"] by page ["+request+"] in Cache");
 				this.evictPageFromCache(p);
 				this.countPagefaults++;

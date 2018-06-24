@@ -4,10 +4,10 @@ import java.util.ArrayList;
 
 import datastructures.*;
 
-public class Marking <T extends Page> extends Random {
+public class Marking <T extends MarkedPage> extends Random<T> {
 
 	
-	public <U extends MarkedPage> Marking(ArrayList<U> sequence) {
+	public Marking(ArrayList<T> sequence) {
 		super(sequence);
 	}
 	
@@ -33,18 +33,18 @@ public class Marking <T extends Page> extends Random {
 	
 
 	@Override
-	public void serveRequest(Page request) {
-		MarkedPage req = (MarkedPage) request;
-		if(this.cache.hasPage(req)) {
-			System.out.println("Served page ["+req+"] by Cache.");
-			int k = this.cache.getPageIndex(req);
+	public void serveRequest(T  request) {
+		//MarkedPage request = (MarkedPage) request;
+		if(this.cache.hasPage(request)) {
+			System.out.println("Served page ["+request+"] by Cache.");
+			int k = this.cache.getPageIndex(request);
 			MarkedPage slot = ((MarkedPage) this.cache.memory.get(k));
 			slot.setBit(true);
 		} else {
 			if(this.cache.hasEmptySlot()) {
-				this.cache.add(req);
-				req.setBit(true);
-				System.out.println("Loaded page ["+req+"] into an empty slot.");
+				this.cache.add(request);
+				request.setBit(true);
+				System.out.println("Loaded page ["+request+"] into an empty slot.");
 			} else { // removing strategy
 				MarkedPage p = new MarkedPage();
 				
@@ -53,15 +53,15 @@ public class Marking <T extends Page> extends Random {
 				}
 				// get unmarked page
 				do {
-					p = (MarkedPage) this.getRandomCachePage();
+					p = this.getRandomCachePage();
 				} while(p.getBit());
 				// page is unmarked (negation of while loop condition)
 				
-				System.out.println("Replaced page ["+p+"] by page ["+req+"] in Cache");
-				this.evictPageFromCache(p);
+				System.out.println("Replaced page ["+p+"] by page ["+request+"] in Cache");
+				this.evictPageFromCache((T)p);
 				this.countPagefaults++;
-				this.cache.add(req);
-				req.setBit(true);
+				this.cache.add(request);
+				request.setBit(true);
 			}
 		}
 	}
