@@ -1,8 +1,7 @@
 package datastructures;
 
-import java.util.Date;
 
-public class Page implements Comparable{
+public class Page implements Comparable<Page>{
 
 	protected char token;
 	
@@ -46,14 +45,14 @@ public class Page implements Comparable{
 
 
 	@Override
-	public int compareTo(Object o) {
-		if(o == null) {
+	public int compareTo(Page p) {
+		if(p == null) {
 			throw new NullPointerException();
 		}
-		if(!(o instanceof Page)) {
+		if(!(p instanceof Page)) {
 			return Integer.MIN_VALUE;
 		}
-		Page q = (Page) o;
+		Page q = p;
 		return Character.compare(this.getToken(), q.getToken());
 	}
 }

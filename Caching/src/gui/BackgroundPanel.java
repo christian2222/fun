@@ -4,7 +4,6 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import javax.swing.JButton;
 import javax.swing.JPanel;
 
 import datastructures.Memory;

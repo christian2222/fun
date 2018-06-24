@@ -6,15 +6,12 @@ import java.util.Random;
 
 import datastructures.*;
 
-public abstract class Model<T extends Page> extends GenericList<T>{
-
-	
-	
+public abstract class Model<T extends Page> extends GenericList<T> {
 	protected Random rand = new Random();
 
 	
-	public Memory cache;
-	public Memory background;
+	public Memory<T> cache;
+	public Memory<T> background;
 	public ArrayList<T> sequence;
 	public int countPagefaults;
 
