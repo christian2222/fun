@@ -33,16 +33,16 @@ public class Test {
 
 		initSequences("abcdaefghijklmnobadbcdbabcdb");
 		
-		Random rand = new Random(randSeq);
+		Random<Page> rand = new Random<Page>(randSeq);
 		
-		Fc fc = new Fc<CountPage>(countSeq);
+		Fc<CountPage> fc = new Fc<CountPage>(countSeq);
 		
-		Lru lru = new Lru<TimePage>(timeSeq);
+		Lru<TimePage> lru = new Lru<TimePage>(timeSeq);
 		
 		rand.runAlgorithm();
 		lru.runAlgorithm();
 	
-		Marking mark = new Marking<MarkedPage>(markSeq);
+		Marking<MarkedPage> mark = new Marking<MarkedPage>(markSeq);
 		mark.runAlgorithm();
 		
 

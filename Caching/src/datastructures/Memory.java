@@ -48,7 +48,7 @@ public class Memory<T extends Page> {
 		Page q = new Page();
 		for(int i = 0; i < this.memory.size(); i++) {
 			if(this.memory.get(i).equals(p)) {
-				q = p;
+				q = this.memory.get(i);
 			}
 		}
 		return q;

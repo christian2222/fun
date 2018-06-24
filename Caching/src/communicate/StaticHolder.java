@@ -1,5 +1,4 @@
 package communicate;
-import java.util.ArrayList;
 
 import datastructures.Page;
 import gui.MainWindow;

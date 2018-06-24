@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import algorithms.Random;
 import datastructures.Page;
 
-public class ByHand<T extends Page> extends Random {
+public class ByHand<T extends Page> extends Random<T> {
 
 	
 
@@ -19,7 +19,8 @@ public class ByHand<T extends Page> extends Random {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public void serveRequest(Page request) {
+	@Override
+	public void serveRequest(T request) {
 		StaticHolder.mainWindow.addChar(request.getToken());
 		StaticHolder.mainWindow.setTitle("Requested Page: "+request.getToken());
 		try {
@@ -42,7 +43,7 @@ public class ByHand<T extends Page> extends Random {
 					StaticHolder.mainWindow.reload();
 				} while(!StaticHolder.nextStep);
 				Page p = this.selectEvitablePage();
-				this.evictPageFromCache(p);
+				this.evictPageFromCache((T)p);
 				this.countPagefaults++;
 				this.cache.add(request);
 				StaticHolder.mainWindow.reload();
@@ -59,7 +60,7 @@ public class ByHand<T extends Page> extends Random {
 
 		System.out.println("Sequence to serve: "+this.printSequence());
 		for(int i = 0; i < this.sequence.size(); i++) {
-			T request = (T) this.sequence.get(i);
+			T request = this.sequence.get(i);
 			System.out.println(this.cache);
 			System.out.println("Requested page: "+request);
 
