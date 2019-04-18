@@ -1,4 +1,4 @@
-package analyse;
+package synthese;
 import java.util.*;
 // script F
 public class FaSet {
@@ -315,7 +315,7 @@ public class FaSet {
 		return V;
 	}
 	
-	public void dreNFAnalyse(Set<String> V) {
+	public void dreiNFsynthese(Set<String> V) {
 		this.calcFmin();
 		this.unifyAllFas();
 		Set<String> schluessel = this.calcSchluessel(V);

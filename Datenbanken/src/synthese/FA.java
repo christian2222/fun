@@ -1,4 +1,4 @@
-package analyse;
+package synthese;
 import java.io.Serializable;
 import java.util.*;
 

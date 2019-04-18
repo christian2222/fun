@@ -1,4 +1,4 @@
-package analyse;
+package synthese;
 
 public class Test {
 
@@ -95,13 +95,13 @@ public class Test {
 		dreiNFanalyse.add(new FA("A", "B"));
 		dreiNFanalyse.add(new FA("B", "C"));
 		dreiNFanalyse.add(new FA("A", "C"));
-		dreiNFanalyse.dreNFAnalyse(FA.parse("A B C D"));
+		dreiNFanalyse.dreiNFsynthese(FA.parse("A B C D"));
 		
 		FaSet zweiteAnalyse = new FaSet();
 		zweiteAnalyse.add(new FA("Lcode","Hstadt"));
 		zweiteAnalyse.add(new FA("Hstadt","Lcode"));
 		zweiteAnalyse.add(new FA("Kname Lcode","Prozent"));
-		zweiteAnalyse.dreNFAnalyse(FA.parse("Hstadt Lcode Kname Prozent"));
+		zweiteAnalyse.dreiNFsynthese(FA.parse("Hstadt Lcode Kname Prozent"));
 
 	}
 }
