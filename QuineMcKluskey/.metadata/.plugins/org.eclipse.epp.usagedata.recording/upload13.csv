@@ -1,0 +1,26 @@
+what,kind,bundleId,bundleVersion,description,time
+started,bundle,org.eclipse.jdt.ui,3.5.1.r351_v20090821-0800,"org.eclipse.jdt.ui",1263594294710
+started,bundle,org.eclipse.jface,3.5.1.M20090826-0800,"org.eclipse.jface",1263594294710
+started,bundle,org.eclipse.ltk.core.refactoring,3.5.0.v20090513-2000,"org.eclipse.ltk.core.refactoring",1263594294710
+started,bundle,org.eclipse.ltk.ui.refactoring,3.4.100.v20090604,"org.eclipse.ltk.ui.refactoring",1263594294710
+started,bundle,org.eclipse.team.core,3.5.0.I20090527-0620,"org.eclipse.team.core",1263594294720
+started,bundle,org.eclipse.team.ui,3.5.0.I20090430-0408,"org.eclipse.team.ui",1263594294740
+started,bundle,org.eclipse.ui,3.5.1.M20090902-1000,"org.eclipse.ui",1263594294841
+started,bundle,org.eclipse.ui.console,3.4.0.v20090513,"org.eclipse.ui.console",1263594294841
+started,bundle,org.eclipse.ui.editors,3.5.0.v20090527-2000,"org.eclipse.ui.editors",1263594294841
+started,bundle,org.eclipse.ui.ide,3.5.1.M20090826-0800,"org.eclipse.ui.ide",1263594294941
+started,bundle,org.eclipse.ui.net,1.2.1.r35x_20090812-1200,"org.eclipse.ui.net",1263594294941
+started,bundle,org.eclipse.ui.views,3.4.1.M20090826-0800,"org.eclipse.ui.views",1263594294941
+started,bundle,org.eclipse.ui.workbench,3.5.1.M20090826-0800a,"org.eclipse.ui.workbench",1263594294941
+started,bundle,org.eclipse.ui.workbench.texteditor,3.5.0.v20090603,"org.eclipse.ui.workbench.texteditor",1263594294951
+started,bundle,org.eclipse.update.configurator,3.3.0.v20090312,"org.eclipse.update.configurator",1263594294951
+os,sysinfo,,,"win32",1263594294961
+arch,sysinfo,,,"x86",1263594294961
+ws,sysinfo,,,"win32",1263594294961
+locale,sysinfo,,,"de_DE",1263594294961
+processors,sysinfo,,,"1",1263594294961
+java.runtime.name,sysinfo,,,"Java(TM) SE Runtime Environment",1263594294961
+java.runtime.version,sysinfo,,,"1.6.0_18-b07",1263594294961
+java.specification.name,sysinfo,,,"Java Platform API Specification",1263594294961
+java.specification.vendor,sysinfo,,,"Sun Microsystems Inc.",1263594294961
+java.specification.version,sysinfo,,,"1.6",1263594294961

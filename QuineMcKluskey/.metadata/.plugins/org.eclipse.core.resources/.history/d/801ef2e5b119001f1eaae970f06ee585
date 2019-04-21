@@ -1,0 +1,198 @@
+package dialogs;
+import main.Visual2;
+import main.Constraints;
+
+import javax.swing.*;
+
+import java.awt.event.*;
+import java.awt.*;
+
+public class BearbeitenDialog extends JDialog {
+	
+		private static final long serialVersionUID = 1L;
+		private JMenuItem jMenuItem0;
+		private JMenu jMenu0;
+		private JMenuBar jMenuBar0;
+		private JButton ersetze = new JButton("ersetzen");
+		private JButton hinzufuegen = new JButton("hinzufügen");
+		private JButton loeschen = new JButton("löschen");
+		private JButton speichern = new JButton("speichern");
+		private JButton listLoeschen = new JButton("Liste löschen");
+		private JPanel jPanel0;
+		private JScrollPane jScrollPane0;
+		private JCheckBox x[] = new JCheckBox[11];
+		private JPanel jPanel4;
+		private JPanel jPanel2;
+		private JPanel jPanel1;
+		private JButton jButton5;
+		private JPanel jPanel3;
+		private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
+		
+		public DefaultComboBoxModel dcbm = new DefaultComboBoxModel(); 
+		
+		
+		
+		public BearbeitenDialog() {
+		    super(Visual2.mainFrame,"Bearbeiten der Monome",true);
+			initComponents();
+		    setSize(380,240);
+		    setVisible(true);
+		}
+		
+		private void initCheckBoxes() {
+			for(int i = 1; i < 11; i++) {
+				this.x[i] = new JCheckBox("x"+i);
+			}
+		}
+		
+		public void initComboBoxItems() {
+			this.dcbm = new DefaultComboBoxModel();
+			this.dcbm.addElement("test1");
+			this.dcbm.addElement("MONOM test");
+			this.dcbm.addElement("test  003");			
+		}
+
+		private void initComponents() {
+			initCheckBoxes();
+			initComboBoxItems();
+			add(getJPanel0(), BorderLayout.EAST);
+			add(getJPanel1(), BorderLayout.CENTER);
+			setJMenuBar(getJMenuBar0());
+			setSize(320, 218);
+		}
+
+		private JPanel getJPanel3() {
+			if (jPanel3 == null) {
+				jPanel3 = new JPanel();
+				for(int i = 1; i < 11; i++)
+					jPanel3.add(x[i]);
+			}
+			return jPanel3;
+		}
+
+
+		private JPanel getJPanel1() {
+			if (jPanel1 == null) {
+				jPanel1 = new JPanel();
+				jPanel1.setLayout(new BorderLayout());
+				jPanel1.add(getJScrollPane0(), BorderLayout.NORTH);
+				jPanel1.add(getJPanel2(), BorderLayout.CENTER);
+			}
+			return jPanel1;
+		}
+
+		private JPanel getJPanel2() {
+			if (jPanel2 == null) {
+				jPanel2 = new JPanel();
+				jPanel2.setLayout(new BorderLayout());
+				jPanel2.add(getJPanel4(), BorderLayout.CENTER);
+			}
+			return jPanel2;
+		}
+
+		private JPanel getJPanel4() {
+			if (jPanel4 == null) {
+				jPanel4 = new JPanel();
+				jPanel4.setPreferredSize(new Dimension(100, 100));
+				jPanel4.setLayout(new BorderLayout());
+				jPanel4.add(new JComboBox(this.dcbm), BorderLayout.NORTH);
+				jPanel4.add(getJPanel3(), BorderLayout.CENTER);
+			}
+			return jPanel4;
+		}
+
+
+		
+
+		private JScrollPane getJScrollPane0() {
+			if (jScrollPane0 == null) {
+				jScrollPane0 = new JScrollPane();
+			}
+			return jScrollPane0;
+		}
+
+		private JPanel getJPanel0() {
+			if (jPanel0 == null) {
+				jPanel0 = new JPanel();
+				jPanel0.setPreferredSize(new Dimension(100, 100));
+				jPanel0.add(ersetze);
+				jPanel0.add(hinzufuegen);
+				jPanel0.add(loeschen);
+				jPanel0.add(speichern);
+				jPanel0.add(listLoeschen);
+				jPanel0.add(new JButton("empty"));
+			}
+			return jPanel0;
+		}
+
+
+		private JMenuBar getJMenuBar0() {
+			if (jMenuBar0 == null) {
+				jMenuBar0 = new JMenuBar();
+				jMenuBar0.add(getJMenu0());
+			}
+			return jMenuBar0;
+		}
+
+		private JMenu getJMenu0() {
+			if (jMenu0 == null) {
+				jMenu0 = new JMenu();
+				jMenu0.setText("jMenu0");
+				jMenu0.add(getJMenuItem0());
+			}
+			return jMenu0;
+		}
+
+		private JMenuItem getJMenuItem0() {
+			if (jMenuItem0 == null) {
+				jMenuItem0 = new JMenuItem();
+				jMenuItem0.setText("jMenuItem0");
+			}
+			return jMenuItem0;
+		}
+
+		private static void installLnF() {
+			try {
+				String lnfClassname = PREFERRED_LOOK_AND_FEEL;
+				if (lnfClassname == null)
+					lnfClassname = UIManager.getCrossPlatformLookAndFeelClassName();
+				UIManager.setLookAndFeel(lnfClassname);
+			} catch (Exception e) {
+				System.err.println("Cannot install " + PREFERRED_LOOK_AND_FEEL
+						+ " on this platform:" + e.getMessage());
+			}
+		}
+
+
+	
+
+/**
+ * Main entry of the class.
+ * Note: This class is only created so that you can easily preview the result at runtime.
+ * It is not expected to be managed by the designer.
+ * You can modify it as you like.
+ */
+public static void main(String[] args) {
+	installLnF();
+	SwingUtilities.invokeLater(new Runnable() {
+		@Override
+		public void run() {
+			BearbeitenDialog frame = new BearbeitenDialog();
+			frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+			frame.setTitle("test2");
+			frame.getContentPane().setPreferredSize(frame.getSize());
+			frame.pack();
+			frame.setLocationRelativeTo(null);
+			frame.setVisible(true);
+		}
+	});
+}
+	
+	
+	
+	
+	
+	
+
+
+}

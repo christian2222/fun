@@ -1,0 +1,342 @@
+package dialogs;
+import main.Visual2;
+import main.Constraints;
+
+import javax.swing.*;
+
+import java.awt.event.*;
+import java.awt.*;
+
+public class BearbeitenDialog extends JDialog {
+	
+		private static final long serialVersionUID = 1L;
+		private JMenuItem jMenuItem0;
+		private JMenu jMenu0;
+		private JMenuBar jMenuBar0;
+		private JButton ersetze;
+		private JButton jButton1;
+		private JButton jButton2;
+		private JButton jButton3;
+		private JButton jButton4;
+		private JPanel jPanel0;
+		private JScrollPane jScrollPane0;
+		private JCheckBox jCheckBox0;
+		private JComboBox jComboBox0;
+		private JCheckBox jCheckBox1;
+		private JCheckBox jCheckBox2;
+		private JCheckBox jCheckBox3;
+		private JCheckBox jCheckBox4;
+		private JCheckBox jCheckBox6;
+		private JCheckBox jCheckBox5;
+		private JCheckBox jCheckBox7;
+		private JCheckBox jCheckBox8;
+		private JCheckBox jCheckBox9;
+		private JPanel jPanel4;
+		private JPanel jPanel2;
+		private JPanel jPanel1;
+		private JButton jButton5;
+		private JPanel jPanel3;
+		private static final String PREFERRED_LOOK_AND_FEEL = "javax.swing.plaf.metal.MetalLookAndFeel";
+		
+		public DefaultComboBoxModel dcbm = new DefaultComboBoxModel(); 
+		
+		
+		
+		public BearbeitenDialog() {
+		    super(Visual2.mainFrame,"Bearbeiten der Monome",true);
+			initComponents();
+		    setSize(380,240);
+		    setVisible(true);
+		}
+		
+		public void initComboBoxItems() {
+			this.dcbm = new DefaultComboBoxModel();
+			this.dcbm.addElement("test1");
+			this.dcbm.addElement("MONOM test");
+			this.dcbm.addElement("test  003");			
+		}
+
+		private void initComponents() {
+			initComboBoxItems();
+			add(getJPanel0(), BorderLayout.EAST);
+			add(getJPanel1(), BorderLayout.CENTER);
+			setJMenuBar(getJMenuBar0());
+			setSize(320, 218);
+		}
+
+		private JPanel getJPanel3() {
+			if (jPanel3 == null) {
+				jPanel3 = new JPanel();
+				jPanel3.add(getJCheckBox0());
+				jPanel3.add(getJCheckBox2());
+				jPanel3.add(getJCheckBox1());
+				jPanel3.add(getJCheckBox4());
+				jPanel3.add(getJCheckBox3());
+				jPanel3.add(getJCheckBox6());
+				jPanel3.add(getJCheckBox5());
+				jPanel3.add(getJCheckBox8());
+				jPanel3.add(getJCheckBox7());
+				jPanel3.add(getJCheckBox9());
+			}
+			return jPanel3;
+		}
+
+		private JCheckBox getJCheckBox9() {
+			if (jCheckBox9 == null) {
+				jCheckBox9 = new JCheckBox();
+				jCheckBox9.setText("jCheckBox9");
+			}
+			return jCheckBox9;
+		}
+
+		private JCheckBox getJCheckBox8() {
+			if (jCheckBox8 == null) {
+				jCheckBox8 = new JCheckBox();
+				jCheckBox8.setText("jCheckBox8");
+			}
+			return jCheckBox8;
+		}
+
+		private JComboBox getJComboBox0() {
+			if (jComboBox0 == null) {
+				jComboBox0 = new JComboBox();
+				jComboBox0.setModel(dcbm);
+				jComboBox0.setDoubleBuffered(false);
+				jComboBox0.setBorder(null);
+			}
+			return jComboBox0;
+		}
+
+		private JButton getJButton5() {
+			if (jButton5 == null) {
+				jButton5 = new JButton();
+				jButton5.setText("jButton5");
+			}
+			return jButton5;
+		}
+
+		private JPanel getJPanel1() {
+			if (jPanel1 == null) {
+				jPanel1 = new JPanel();
+				jPanel1.setLayout(new BorderLayout());
+				jPanel1.add(getJScrollPane0(), BorderLayout.NORTH);
+				jPanel1.add(getJPanel2(), BorderLayout.CENTER);
+			}
+			return jPanel1;
+		}
+
+		private JPanel getJPanel2() {
+			if (jPanel2 == null) {
+				jPanel2 = new JPanel();
+				jPanel2.setLayout(new BorderLayout());
+				jPanel2.add(getJPanel4(), BorderLayout.CENTER);
+			}
+			return jPanel2;
+		}
+
+		private JPanel getJPanel4() {
+			if (jPanel4 == null) {
+				jPanel4 = new JPanel();
+				jPanel4.setPreferredSize(new Dimension(100, 100));
+				jPanel4.setLayout(new BorderLayout());
+				jPanel4.add(getJComboBox0(), BorderLayout.NORTH);
+				jPanel4.add(getJPanel3(), BorderLayout.CENTER);
+			}
+			return jPanel4;
+		}
+
+		private JCheckBox getJCheckBox7() {
+			if (jCheckBox7 == null) {
+				jCheckBox7 = new JCheckBox();
+				jCheckBox7.setText("jCheckBox7");
+			}
+			return jCheckBox7;
+		}
+
+		private JCheckBox getJCheckBox5() {
+			if (jCheckBox5 == null) {
+				jCheckBox5 = new JCheckBox();
+				jCheckBox5.setText("jCheckBox5");
+			}
+			return jCheckBox5;
+		}
+
+		private JCheckBox getJCheckBox6() {
+			if (jCheckBox6 == null) {
+				jCheckBox6 = new JCheckBox();
+				jCheckBox6.setText("jCheckBox6");
+			}
+			return jCheckBox6;
+		}
+
+		private JCheckBox getJCheckBox3() {
+			if (jCheckBox3 == null) {
+				jCheckBox3 = new JCheckBox();
+				jCheckBox3.setText("jCheckBox3");
+			}
+			return jCheckBox3;
+		}
+
+		private JCheckBox getJCheckBox4() {
+			if (jCheckBox4 == null) {
+				jCheckBox4 = new JCheckBox();
+				jCheckBox4.setText("jCheckBox4");
+			}
+			return jCheckBox4;
+		}
+
+		private JCheckBox getJCheckBox1() {
+			if (jCheckBox1 == null) {
+				jCheckBox1 = new JCheckBox();
+				jCheckBox1.setText("jCheckBox1");
+			}
+			return jCheckBox1;
+		}
+
+		private JCheckBox getJCheckBox2() {
+			if (jCheckBox2 == null) {
+				jCheckBox2 = new JCheckBox();
+				jCheckBox2.setText("jCheckBox2");
+			}
+			return jCheckBox2;
+		}
+
+		private JCheckBox getJCheckBox0() {
+			if (jCheckBox0 == null) {
+				jCheckBox0 = new JCheckBox();
+				jCheckBox0.setText("jCheckBox0");
+			}
+			return jCheckBox0;
+		}
+
+		private JScrollPane getJScrollPane0() {
+			if (jScrollPane0 == null) {
+				jScrollPane0 = new JScrollPane();
+			}
+			return jScrollPane0;
+		}
+
+		private JPanel getJPanel0() {
+			if (jPanel0 == null) {
+				jPanel0 = new JPanel();
+				jPanel0.setPreferredSize(new Dimension(100, 100));
+				jPanel0.add(getJButton0());
+				jPanel0.add(getJButton1());
+				jPanel0.add(getJButton2());
+				jPanel0.add(getJButton3());
+				jPanel0.add(getJButton5());
+				jPanel0.add(getJButton4());
+			}
+			return jPanel0;
+		}
+
+		private JButton getJButton4() {
+			if (jButton4 == null) {
+				jButton4 = new JButton();
+				jButton4.setText("jButton4");
+			}
+			return jButton4;
+		}
+
+		private JButton getJButton3() {
+			if (jButton3 == null) {
+				jButton3 = new JButton();
+				jButton3.setText("jButton3");
+			}
+			return jButton3;
+		}
+
+		private JButton getJButton2() {
+			if (jButton2 == null) {
+				jButton2 = new JButton();
+				jButton2.setText("jButton2");
+			}
+			return jButton2;
+		}
+
+		private JButton getJButton1() {
+			if (jButton1 == null) {
+				jButton1 = new JButton();
+				jButton1.setText("jButton1");
+			}
+			return jButton1;
+		}
+
+		private JButton getJButton0() {
+			if (ersetze == null) {
+				ersetze = new JButton();
+				ersetze.setText("ersetzen");
+			}
+			return ersetze;
+		}
+
+		private JMenuBar getJMenuBar0() {
+			if (jMenuBar0 == null) {
+				jMenuBar0 = new JMenuBar();
+				jMenuBar0.add(getJMenu0());
+			}
+			return jMenuBar0;
+		}
+
+		private JMenu getJMenu0() {
+			if (jMenu0 == null) {
+				jMenu0 = new JMenu();
+				jMenu0.setText("jMenu0");
+				jMenu0.add(getJMenuItem0());
+			}
+			return jMenu0;
+		}
+
+		private JMenuItem getJMenuItem0() {
+			if (jMenuItem0 == null) {
+				jMenuItem0 = new JMenuItem();
+				jMenuItem0.setText("jMenuItem0");
+			}
+			return jMenuItem0;
+		}
+
+		private static void installLnF() {
+			try {
+				String lnfClassname = PREFERRED_LOOK_AND_FEEL;
+				if (lnfClassname == null)
+					lnfClassname = UIManager.getCrossPlatformLookAndFeelClassName();
+				UIManager.setLookAndFeel(lnfClassname);
+			} catch (Exception e) {
+				System.err.println("Cannot install " + PREFERRED_LOOK_AND_FEEL
+						+ " on this platform:" + e.getMessage());
+			}
+		}
+
+
+	
+
+/**
+ * Main entry of the class.
+ * Note: This class is only created so that you can easily preview the result at runtime.
+ * It is not expected to be managed by the designer.
+ * You can modify it as you like.
+ */
+public static void main(String[] args) {
+	installLnF();
+	SwingUtilities.invokeLater(new Runnable() {
+		@Override
+		public void run() {
+			BearbeitenDialog frame = new BearbeitenDialog();
+			frame.setDefaultCloseOperation(frame.EXIT_ON_CLOSE);
+			frame.setTitle("test2");
+			frame.getContentPane().setPreferredSize(frame.getSize());
+			frame.pack();
+			frame.setLocationRelativeTo(null);
+			frame.setVisible(true);
+		}
+	});
+}
+	
+	
+	
+	
+	
+	
+
+
+}

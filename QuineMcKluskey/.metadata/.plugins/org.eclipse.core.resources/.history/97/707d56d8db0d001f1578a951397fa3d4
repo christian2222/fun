@@ -1,0 +1,50 @@
+package dialogs;
+import main.Visual2;
+import main.Constraints;
+
+import javax.swing.*;
+
+import java.awt.event.*;
+import java.awt.*;
+
+public class BearbeitenDialog extends JDialog {
+	
+    public static JButton delMonom = new JButton("deleteMonom");
+    public static JButton addMonom = new JButton("add Monom");
+    public static JButton subMonom = new JButton("substitue Monom");
+    private static JScrollPane scroller;
+	private static JPanel mainPanel = new JPanel(new BorderLayout());
+	private static JPanel monomPanel = new JPanel(new GridLayout(3,10));
+	private static JCheckBox[] boxes = new JCheckBox[11];
+	private static String[] nameBoxes = new String[11];
+	
+	
+	private static void initMonomPanel() {
+		for(int i = 1; i < Constraints.maxIndex; i++) {
+			nameBoxes[i] = "Literal x"+i+" ";
+			boxes[i].setSelected(false);
+			monomPanel.add(boxes[i],i-1);
+		}
+		mainPanel = monomPanel;
+	}
+	
+	
+	public BearbeitenDialog()
+	{
+	    super(Visual2.mainFrame,"Bearbeiten der Monome",true);
+	    setSize(600,400);
+	    Container pane = this.getContentPane();
+	    this.initMonomPanel();
+	    pane.add(mainPanel);
+	    setVisible(true);
+	    
+	}
+	
+	
+	public static void main(String[] args) {
+		BearbeitenDialog bd = new BearbeitenDialog();
+		bd.setVisible(true);
+	}
+
+
+}

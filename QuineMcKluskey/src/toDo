@@ -1,0 +1,12 @@
+(j) - special adds-menu
+(j) (add complete powerset) see below
+(j) add x random monomes with a ComboBox and values:
+(j) x = 5,10,20,50,100,200,500,1000,2000,5000, complete powerset
+(j) implement load and save methods (including structure of a data file)
+(j) Add cancel Listeners for dialogs
+(j) problem report.txt
+
+document and reorganize all classes
+
+-> MonomOnesSubset 2^10 or 10 different sets needed?
+-> Document MonomPowerSet.getInputLatex()

@@ -1,0 +1,57 @@
+Notes on the QuineMcCluskey-Algorithm
+
+Given f: B^n -> B
+
+begin
+
+Initialize L_0 := Minterm(f) = U {points in the set ON(f)}
+				= All points on which f is true
+				= 0-Implicants
+				
+i = 0; iteration-variable
+// L_i enthält alle Implikanten von f der Länge n-i = Schleifen-Invariante
+Prim(f) = empty; //noch keine Primimplikanten
+while(L_i != empty) and (i < n) {
+loop L_{i+1} = {m | mx und mx' sind in L_i für ein x} // x' = not x
+	Prim(f) = 
+		Prim(f) u {m in L_i und m wird von keinem q aus l_{i+1} überdeckt};
+i = i+1
+pool;
+return L_i u Prim(f);
+
+end
+
+Potentielle Partner als mx und mx' sind nur Monome, die sich an einer
+Bitstelle unterscheiden.
+McKluskey Idee: Partitioniere die L_i s.
+
+Partitioniere L_i in Klassen L_i^M mit M c {x_1,...,x_n} und |M| = n-i.
+L_i^M enthalte die Implikanten aus L_i, deren Literale alle aus M sind.
+
+-> Ordne die Monome in L_i^M gemäß der Anzahl der positiven Literale.
+
+Bemerkung: L_i^{x1,x3,x5} = [1-0-1,0-0-0,1-1-1,1-0-0} alle Literale sind
+			nur aus der Menge M.
+			Im Algorithmus haben diese Literale die gemeinsame Singatur
+			X-X-X, welche durch die Monom-Methode getSignature() 
+			zurückgegeben wird.
+			Monome nach verschmelzen nicht löschen, da die Hyperwürfel
+			zusammenhängeng sein muß.
+			Jedes Element mit jedem anderen in der L_i^M-Menge vergleichen.
+Bsp:
+L_1^{x1,x3,x4}
+
+0-00 	Gruppe I
+----
+0-01	Gruppe II
+1-00
+----
+0-11	Gruppe III
+1-01
+1-10
+
+Vergleiche hier jeweils nur Monome die sich um einen Eintrag unterscheiden.
+Vergkeiche aber innerhalb der enstehenden Gruppen (I und II, II und III)
+alle Monome miteinander, da sich hyperwürfel aus Teilwürfeln zusammensetzen.
+
+			
