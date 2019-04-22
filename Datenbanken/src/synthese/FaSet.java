@@ -147,7 +147,7 @@ public class FaSet {
 	
 	protected void unifyTwoFas(FA fa1, FA fa2) {
 		if(fa1.getLeftSide().equals(fa2.getLeftSide())) {
-			System.out.println("Unify "+fa1+" and "+fa2);
+			//System.out.println("Unify "+fa1+" and "+fa2);
 			Set<String> newRightSide = fa1.getRightSide();
 			newRightSide.addAll(fa2.getRightSide());
 			//boolean success = fa1.getRightSide().addAll(fa2.getRightSide());
@@ -352,6 +352,9 @@ public class FaSet {
 				if(this.isNotSchluesselAttributeOf(rightAttribute,V)) {
 					// leftSide is Superschlüssel
 					isIn3nf = isIn3nf && leftSide.containsAll(schluessel);
+					if(!leftSide.containsAll(schluessel)) {
+						System.out.println(fa+" is not in 3nf");
+					}
 				}
 			}
 		}
@@ -369,6 +372,9 @@ public class FaSet {
 	
 	
 	public void dreiNFsynthese(Set<String> V) {
+		System.out.println("3NF-Synthese auf");
+		System.out.println("V= "+V.toString()+" und ");
+		System.out.println("scriptF= "+this.faSet);
 		this.calcFmin();
 		this.unifyAllFas();
 		Set<String> schluessel = this.calcSchluessel(V);

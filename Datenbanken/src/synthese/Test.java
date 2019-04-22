@@ -3,6 +3,7 @@ package synthese;
 public class Test {
 
 	public static void main(String[] args) {
+		/*
 		FA one = new FA("Nummer Ort Haus","Nummer");
 		FA two = new FA("PLZ","Stadt Land");
 		FA three = new FA("A B","C D");
@@ -90,7 +91,7 @@ public class Test {
 		System.out.println(trivials);
 		trivials.removeAllTrivials();
 		System.out.println(trivials);
-		
+	*/	
 		FaSet dreiNFanalyse = new FaSet();
 		dreiNFanalyse.add(new FA("A", "B"));
 		dreiNFanalyse.add(new FA("B", "C"));
