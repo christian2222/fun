@@ -8,7 +8,7 @@ public class NextFit extends BinPackingAlgorithm {
     
     public NextFit() {
 	this.actualBin = new Bin();
-	this.name = "Sascha"; 
+	this.name = "NextFit"; 
     }
     
     @Override

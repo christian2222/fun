@@ -13,7 +13,7 @@ public class FirstFitDecreasing extends BinPackingAlgorithm {
     public FirstFitDecreasing() {
 	this.binList = new Vector<Bin>();
 	this.actualBin = new Bin();
-	this.name = "infoNerd"; 
+	this.name = "FirstFitDecreasing"; 
     }
     
     @Override
@@ -44,9 +44,9 @@ public class FirstFitDecreasing extends BinPackingAlgorithm {
 	    this.addToAmount(i.getSize());
 	    added = true;
 	}
-	// Liste enthält Bins
+	// Liste enthï¿½lt Bins
 	else {
-	    // prüfe ob das item noch in eines der vorhandenen
+	    // prï¿½fe ob das item noch in eines der vorhandenen
 	    // bins reinpasst
 	    for(Bin b : this.binList) {
 		if(b.isAddable(i)) {
@@ -55,7 +55,7 @@ public class FirstFitDecreasing extends BinPackingAlgorithm {
 		    added = true;
 		}
 	    }
-	    // falls nicht füge eine neues Bin zur Liste hinzu und
+	    // falls nicht fï¿½ge eine neues Bin zur Liste hinzu und
 	    // verpacke das Item dort.
 	    if(!added) {
 		Bin b = new Bin();
