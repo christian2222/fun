@@ -6,7 +6,7 @@ public class BestFit extends BinPackingAlgorithm {
     
     public BestFit() {
 	this.actualBin = new Bin();
-	this.name = "BestF"it; 
+	this.name = "BestFit"; 
     }
     
     public void add(Item i) {
