@@ -315,6 +315,59 @@ public class FaSet {
 		return V;
 	}
 	
+	public boolean isSchluesselAttributeOf(String attr, Set<String> V) {
+		Set<String> schluessel = this.calcSchluessel(V);
+		return schluessel.contains(attr);
+	}
+	
+	public boolean isNotSchluesselAttributeOf(String attr, Set<String> V) {
+		return !this.isSchluesselAttributeOf(attr, V);
+	}
+	
+	public boolean isSchluesselSubsetOf(Set<String> attrs, Set<String> V) {
+		Set<String> schluessel = this.calcSchluessel(V);
+		// subset relation attrs c schluessel
+		boolean isSchluesselSubset = schluessel.containsAll(attrs);
+		/* correct but inefficient, because of recalculation of schluessel
+		for(String attribute : attrs) {
+			// isSchluesselSubset = isSchluesselSubset && this.isSchluesselAttributeOf(attribute, V);
+		}
+		*/
+		return isSchluesselSubset;
+	}
+	
+	public boolean isNotSchluesselSubsetOf(Set<String> attrs,Set<String> V) {
+		return !this.isSchluesselSubsetOf(attrs, V);
+	}
+	
+	private boolean isIn3NF(FA fa, Set<String> V) {
+		boolean isIn3nf = true;
+		Set<String> schluessel = this.calcSchluessel(V);
+		Set<String> leftSide = fa.getLeftSide();
+		Set<String> rightSide = fa.getRightSide();
+		for(String rightAttribute: rightSide) {
+			// fa is not trivial
+			if(!leftSide.contains(rightAttribute)) {
+				// rightAttribut is not a Schluesselattribute
+				if(this.isNotSchluesselAttributeOf(rightAttribute,V)) {
+					// leftSide is Superschlüssel
+					isIn3nf = isIn3nf && leftSide.containsAll(schluessel);
+				}
+			}
+		}
+		return isIn3nf;
+	}
+	
+	public boolean isAllIn3NF(Set<String> V) {
+		boolean all3nf = true;
+		for(FA fa: this.faSet) {
+			all3nf = all3nf && this.isIn3NF(fa, V);
+		}
+		return all3nf;
+	}
+	
+	
+	
 	public void dreiNFsynthese(Set<String> V) {
 		this.calcFmin();
 		this.unifyAllFas();

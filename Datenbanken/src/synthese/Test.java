@@ -96,12 +96,14 @@ public class Test {
 		dreiNFanalyse.add(new FA("B", "C"));
 		dreiNFanalyse.add(new FA("A", "C"));
 		dreiNFanalyse.dreiNFsynthese(FA.parse("A B C D"));
+		System.out.println(dreiNFanalyse.isAllIn3NF(FA.parse("A B C D")));
 		
 		FaSet zweiteAnalyse = new FaSet();
 		zweiteAnalyse.add(new FA("Lcode","Hstadt"));
 		zweiteAnalyse.add(new FA("Hstadt","Lcode"));
 		zweiteAnalyse.add(new FA("Kname Lcode","Prozent"));
 		zweiteAnalyse.dreiNFsynthese(FA.parse("Hstadt Lcode Kname Prozent"));
+		System.out.println(zweiteAnalyse.isAllIn3NF(FA.parse("Hstadt Lcode Kname Prozent")));
 
 	}
 }
