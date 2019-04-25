@@ -340,6 +340,34 @@ public class FaSet {
 		return !this.isSchluesselSubsetOf(attrs, V);
 	}
 	
+	private boolean isInBcnf(FA fa, Set<String> V) {
+		boolean isInBcnf = true;
+		Set<String> schluessel = this.calcSchluessel(V);
+		Set<String> leftSide = fa.getLeftSide();
+		Set<String> rightSide = fa.getRightSide();
+		for(String rightAttribute: rightSide) {
+			// fa is not trivial
+			if(!leftSide.contains(rightAttribute)) {
+					// leftSide is Superschlüssel
+					isInBcnf = isInBcnf && leftSide.containsAll(schluessel);
+					if(!leftSide.containsAll(schluessel)) {
+						System.out.println(fa+" is not in Bcnf");
+					}
+			}
+		}
+		
+		return isInBcnf;
+	}
+	
+	public boolean isAllInBcnf(Set<String> V) {
+		boolean allBcnf = true;
+		for(FA fa: this.faSet) {
+			allBcnf = allBcnf && this.isInBcnf(fa, V);
+		}
+		
+		return allBcnf;
+	}
+	
 	private boolean isIn3NF(FA fa, Set<String> V) {
 		boolean isIn3nf = true;
 		Set<String> schluessel = this.calcSchluessel(V);
