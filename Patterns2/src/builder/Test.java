@@ -19,5 +19,8 @@ public class Test {
 		
 		layouter.doLayout(new XmlLayout());
 		layouter.printLayoutedSourcePage();
+		
+		layouter.doLayout(new HtmlLayout());
+		layouter.printLayoutedSourcePage();
 	}
 }
