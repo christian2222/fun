@@ -35,7 +35,7 @@ public class HinzuDialog extends JDialog
 	
 	public HinzuDialog()
 	{
-		super(Visual.bd,"Vokabel hinzufügen",true);
+		super(Visual.bd,"Vokabel hinzufuegen",true);
 		setSize(300,200);
 		
 		init();

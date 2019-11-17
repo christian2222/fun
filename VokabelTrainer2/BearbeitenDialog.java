@@ -18,9 +18,9 @@ import java.awt.*;
 public class BearbeitenDialog extends JDialog
 {
     public static JButton cancelButton = new JButton("Abbruch");
-    public static JButton entfernButton = new JButton("Vokabel löschen");
-    public static JButton tauschButton = new JButton("Einträge vertauschen");
-    public static JButton hinzuButton = new JButton("Vokabel hinzufügen");
+    public static JButton entfernButton = new JButton("Vokabel loeschen");
+    public static JButton tauschButton = new JButton("Eintraege vertauschen");
+    public static JButton hinzuButton = new JButton("Vokabel hinzufuegen");
     public static JButton okButton = new JButton("Ok");
     
     private static JScrollPane scroller;
@@ -30,7 +30,7 @@ public class BearbeitenDialog extends JDialog
 	public BearbeitenDialog()
 	{
 	    super(Visual.mainFrame,"Bearbeiten der Vokabeln",true);
-	    setSize(600,400);
+	    setSize(1000,400);
 	    JPanel mainPanel = this.createBearbeitenPanel();
 	    Container pane = this.getContentPane();
 	    pane.add(mainPanel);
