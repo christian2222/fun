@@ -30,6 +30,7 @@ public class TestDialogOkListener implements ActionListener
 	    if(Data.testList.isNotEmpty())
 	    {
 	        input = Visual.td.getEingabe();
+	        input = input.trim();
 	        solution = Data.testVok.getVokabel();
 	        
 	        if(input.equals(solution))
@@ -91,7 +92,7 @@ public class TestDialogOkListener implements ActionListener
 	        else
 	        {
 	            
-	            Visual.td.setVorgabe("*** Herzlichen Glückwunsch ***");
+	            Visual.td.setVorgabe("*** Herzlichen Glï¿½ckwunsch ***");
 	            Visual.td.setEingabe("Test abgeschlossen");
 	            Visual.td.disableEingabe();
 	            Visual.td.disableOkButton();

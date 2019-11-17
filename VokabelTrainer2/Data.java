@@ -29,7 +29,7 @@ public class Data
 		            //liegt [first] lexikographisch hinter [second] ?
 	    	        if(first.compareTo(second) > 0)
 	    	        {
-	    	            // => nun müssen die Inhalte vertauscht werden
+	    	            // => nun muessen die Inhalte vertauscht werden
 	    	            o = n.getContent();
 	    	            n.setContent(n.getNextNode().getContent());
 	    	            n.getNextNode().setContent(o);
@@ -117,7 +117,7 @@ public class Data
 				                hasVok = true;
 				            }
 				            
-						    // nächste Zeile holen
+						    // nï¿½chste Zeile holen
 							s = loadFile.readLine();
 							if(s != null)
 							    s = s.trim();
@@ -142,7 +142,7 @@ public class Data
 				        }
 				    }
 				    
-				    // nächste Zeile holen
+				    // nï¿½chste Zeile holen
 					s = loadFile.readLine();
 					if(s != null)
 					    s = s.trim();
@@ -238,7 +238,7 @@ public class Data
 		        } // durchlaufen des Strings
 	        } // if trennender Substring existiert
 	        
-	    } // für alle Eiträge der Liste
+	    } // fï¿½r alle Eitrï¿½ge der Liste
 
 	} // saveVisualList()
 	
