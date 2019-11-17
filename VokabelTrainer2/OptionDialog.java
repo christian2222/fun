@@ -9,8 +9,14 @@ public class OptionDialog extends JDialog
 	public static JPanel mainPanel = new JPanel(new BorderLayout());
 	public static JButton ok = new JButton("Ok");
 	public static JButton cancel = new JButton("Abbruch");
-	public static JTextField wdhText = new JTextField(""+Values.wdh);
-	public static JTextField falschWdhText = new JTextField(""+Values.fehlerWdh);
+	//public static JTextField wdhText = new JTextField(""+Values.wdh);
+	//public static JTextField falschWdhText = new JTextField(""+Values.fehlerWdh);
+	public static String wdhString[] = {"0","1","2","3","4","5","6","7","8","9","10"};
+	public static String fehlWdhString[] = {"0","1","2","3","4","5","6","7","8","9","10"};
+	public static JComboBox<String> wdhBox = new JComboBox<String>(wdhString);
+	public static JComboBox<String> fehlWdhBox = new JComboBox<String>(fehlWdhString);
+	
+	
 		
 	private static JPanel centerPanel = new JPanel(new GridLayout(2,2));
 	private static JPanel southPanel = new JPanel(new FlowLayout());
@@ -48,9 +54,9 @@ public class OptionDialog extends JDialog
 		southPanel.add(cancel);
 
 		centerPanel.add(jl1);
-		centerPanel.add(wdhText);
+		centerPanel.add(wdhBox);
 		centerPanel.add(jl2);
-		centerPanel.add(falschWdhText);
+		centerPanel.add(fehlWdhBox);
 
 
 		mainPanel.add(centerPanel,BorderLayout.CENTER);

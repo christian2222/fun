@@ -36,7 +36,7 @@ public class Values
 		{
 			PrintStream target = new PrintStream(new FileOutputStream(new File("options.sav")));
 			target.println("WARNUNG:");
-			target.println("Dies ist eine Konfigutrations-Datei, ändern Sie die Inhalte nicht!");
+			target.println("Dies ist eine Konfigutrations-Datei, aendern Sie die Inhalte nicht!");
 			target.println("***");
 			target.println("Wiederholung:"+wdh);
 			target.println("***");
@@ -53,8 +53,8 @@ public class Values
 	
 	public static boolean isKorrekt(int paramWdh, int paramFehlerWdh)
 	{
-		return ( (paramWdh > 0)&&(paramWdh < 10) && 
-					(0 < paramFehlerWdh)&&(paramFehlerWdh < 10) );
+		return ( (paramWdh > -1)&&(paramWdh < 10) && 
+					(-1 < paramFehlerWdh)&&(paramFehlerWdh < 10) );
 	}
 	
 	public static void setValues(int paramWdh, int paramFehlerWdh)
@@ -62,8 +62,8 @@ public class Values
 		wdh = paramWdh;
 		fehlerWdh = paramFehlerWdh;
 		
-		OptionDialog.wdhText.setText(""+wdh);
-		OptionDialog.falschWdhText.setText(""+fehlerWdh);
+		OptionDialog.wdhBox.setSelectedItem(""+wdh);
+		OptionDialog.fehlWdhBox.setSelectedItem(""+fehlerWdh);
 		
 		Visual.statusZeile.setText("Es wurden (neue) Einstellungen geladen:");
 	}

@@ -48,7 +48,7 @@ public class TestDialog extends JDialog
     public TestDialog()
 	{
 	    super(Visual.mainFrame,"Vokabel Test",true);
-	    setSize(400,300);
+	    setSize(800,300);
 	    this.init();
 	    
 	    setVisible(false);	    

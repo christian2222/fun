@@ -12,8 +12,8 @@ public class OptionOkListener implements ActionListener
 	
 	public void actionPerformed(ActionEvent ae)
 	{
-		sWdh = OptionDialog.wdhText.getText();
-		sFehlerWdh = OptionDialog.falschWdhText.getText();
+		sWdh = (String) OptionDialog.wdhBox.getSelectedItem();
+		sFehlerWdh = (String) OptionDialog.fehlWdhBox.getSelectedItem();
 		ok = true;
 		try
 		{
