@@ -23,6 +23,7 @@ public class Parser {
 	public final int NAME_COLON_TYPE = 1;
 	public final int GETTER_OR_SETTER = 2;
 	
+	//toDo: constructors; constructor is not a method!
 	// use File.separator; as / or \ on Windows
 	public Parser() {
 		Path path = Paths.get("source");
@@ -321,6 +322,57 @@ public class Parser {
 	}
 	
 	
+	public String generateMethodParameters(String line) {
+		String methodParameters = "";
+		if(line.matches(".*(.+).*")) {
+			line = line.trim();
+			int start = line.indexOf('(')+1; //right from (
+			int end = line.indexOf(')'); // left from ) - note substring method does not include end char itself
+			if(start < end) {
+				String parameterString = line.substring(start, end);
+				methodParameters = this.parseParameterString(parameterString);
+				
+			}
+		}
+			return methodParameters;
+	}
+	
+	public String parseParameterString(String paramLine) {
+		paramLine = paramLine.trim();
+		Stack<String> paramStack = new Stack<String>();
+		String parameters = "";
+		while(paramLine != "") {
+			CharSequence comma = ",";
+			if(paramLine.contains(comma)) {
+				int start = paramLine.lastIndexOf(',');
+				int end = paramLine.length();
+				String subString = paramLine.substring(start+1, end);
+				System.out.println(subString);
+				Parameter p = new Parameter(subString);
+				String init = p.getInitNotation();
+				if(subString.equals(init)) {
+					paramStack.push(p.toString());
+					paramLine = paramLine.substring(0, start);
+				}
+			} else { // first parameter
+				Parameter p = new Parameter(paramLine);
+				String init = p.getInitNotation();
+				if( (paramLine.equals(init)) && p.notNull() ) {
+					paramStack.push(p.toString());
+					paramLine = "";
+				}
+			}
+		}
+		
+		while(!paramStack.isEmpty()) {
+			String param = paramStack.pop();
+			if(!paramStack.isEmpty()) parameters += param+", ";
+			else parameters += param;
+		}
+		
+		return parameters;
+	}
+	
 	public void generateVisuals(String visuals, String nameColonType) throws Exception {
 		String parameters = "";
 		if(visuals != null) {
@@ -335,12 +387,15 @@ public class Parser {
 			if(visuals.contains("a")) { // abstract method of abstract class
 				parameters += "void abstract ";
 				String methodName = nameColonType;
+				// methodName = name of method ( methodParameters )
+				methodName = methodName.substring(0, methodName.indexOf("(")) + "("+this.generateMethodParameters(methodName)+")";
 				parameters += methodName +";\n";
 				this.printWriter.write(parameters);
 
 			} else if(visuals.contains("m")) { 
 				parameters += "void ";
 				String methodName = nameColonType;
+				methodName = methodName.substring(0, methodName.indexOf("(")) + "("+this.generateMethodParameters(methodName)+")";
 				parameters += methodName +" { \n\t}\n\n";
 				this.printWriter.write(parameters);
 			} else { // no method, we have a variabel with type
