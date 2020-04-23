@@ -23,7 +23,7 @@ public class Parser {
 	public final int NAME_COLON_TYPE = 1;
 	public final int GETTER_OR_SETTER = 2;
 	
-	//toDo: constructors; constructor is not a method!
+	// Note: construtoc, abstract class and method are very similar -> into one method? 
 	// use File.separator; as / or \ on Windows
 	public Parser() {
 		Path path = Paths.get("source");
@@ -212,7 +212,9 @@ public class Parser {
 		// init with nulls
 		for(String prop: properties) prop = null;
 		
-		if(line.matches("^p.*|^o.*|^r.*")) {
+		
+		 // start with public,protected,private,constructor,static,method,abstract method
+		if(line.matches("^p.*|^o.*|^r.*|^c.*|^s.*|^m.*|^a.*")) {
     		//System.out.println(line);
     		String[] params = line.split("\\s");
     		//for(String param: params)System.out.println(param);
@@ -382,18 +384,24 @@ public class Parser {
 			if(visuals.contains("p")) parameters += "public ";
 			if(visuals.contains("o")) parameters += "protected ";
 			if(visuals.contains("r")) parameters += "private ";
-			if(visuals.contains("c")) parameters += "public ";
 			if(visuals.contains("s")) parameters += "static ";
-			if(visuals.contains("a")) { // abstract method of abstract class
+			if(visuals.contains("c")) { // generate constructor
+				parameters += "public ";
+				String constructorHeader = nameColonType;
+				constructorHeader = constructorHeader.substring(0, constructorHeader.indexOf("(")) + "("+this.generateMethodParameters(constructorHeader)+")";
+				constructorHeader += "{ \n";
+				constructorHeader += "\t}\n\n";
+				this.printWriter.write(parameters + constructorHeader);
+				
+			} else if(visuals.contains("a")) { // abstract method of abstract class
 				parameters += "void abstract ";
 				String methodName = nameColonType;
-				// methodName = name of method ( methodParameters )
+				// methodName = name of method ( methodParameters );
 				methodName = methodName.substring(0, methodName.indexOf("(")) + "("+this.generateMethodParameters(methodName)+")";
 				parameters += methodName +";\n";
 				this.printWriter.write(parameters);
 
 			} else if(visuals.contains("m")) { 
-				parameters += "void ";
 				String methodName = nameColonType;
 				methodName = methodName.substring(0, methodName.indexOf("(")) + "("+this.generateMethodParameters(methodName)+")";
 				parameters += methodName +" { \n\t}\n\n";

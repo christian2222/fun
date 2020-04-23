@@ -56,5 +56,9 @@ public class Parameter {
 	public static void main(String[] args) {
 		Parameter p = new Parameter("kfzNr:int");
 		if(p.notNull()) System.out.println(p);
+		String my = "hello";
+		String[] arr = my.split("\\s");
+		for(String a: arr) System.out.println(a);
+		System.out.println(arr.length);
 	}
 }
