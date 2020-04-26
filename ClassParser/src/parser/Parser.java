@@ -220,19 +220,23 @@ public class Parser {
     		//for(String param: params)System.out.println(param);
     		//System.out.println(params.length);
     		int counter = 0;
-
+    		boolean getterOrSetter = false;
     		while(counter < params.length) {
     			if(counter == 0) properties[VISUALS] = params[counter];
     			if(counter == 1) properties[NAME_COLON_TYPE] = params[counter];
-    			if(counter == 2) properties[GETTER_OR_SETTER] = params[counter];
+    			if(counter == 2)  {
+    				getterOrSetter = params[counter].matches("^(G.*|S.*)"); // match G or S at the beginning
+      				properties[GETTER_OR_SETTER] = params[counter];
+    			}
     			counter++;
     		}
     		//System.out.println(visuals+nameColonType+getterOrSetter);
     		counter = 0;
 
-    		this.generateVisuals(properties[VISUALS], properties[NAME_COLON_TYPE]);
     		
-    		this.generateGetterOrSetter(properties[GETTER_OR_SETTER], properties[NAME_COLON_TYPE]);
+        	this.generateVisuals(properties);
+    		if(getterOrSetter) this.generateGetterOrSetter(properties[GETTER_OR_SETTER], properties[NAME_COLON_TYPE]);
+
 		}
 		
 		return properties;
@@ -375,9 +379,13 @@ public class Parser {
 		return parameters;
 	}
 	
-	public void generateVisuals(String visuals, String nameColonType) throws Exception {
+	
+	public void generateVisuals(String[] properties) throws Exception {
 		String parameters = "";
-		if(visuals != null) {
+		if(properties[2] != null) {
+			String visuals = properties[0];
+			String nameColonType = properties[1];
+			String headerLine = properties[2];
 			//System.out.println(visuals);
 			//System.out.println(visuals.contains("p"));
 			parameters +="\t"; //indent for declaration
@@ -394,7 +402,46 @@ public class Parser {
 				this.printWriter.write(parameters + constructorHeader);
 				
 			} else if(visuals.contains("a")) { // abstract method of abstract class
-				parameters += "void abstract ";
+				parameters += "abstract " + nameColonType + " ";
+				String methodName = headerLine;
+				// methodName = name of method ( methodParameters );
+				methodName = methodName.substring(0, methodName.indexOf("(")) + "("+this.generateMethodParameters(methodName)+")";
+				parameters += methodName +";\n";
+				this.printWriter.write(parameters);
+
+			} else if(visuals.contains("m")) { 
+				parameters += nameColonType+" ";
+				String methodName = headerLine;
+				methodName = methodName.substring(0, methodName.indexOf("(")) + "("+this.generateMethodParameters(methodName)+")";
+				parameters += methodName +" { \n\t}\n\n";
+				this.printWriter.write(parameters);
+			} else { // no method, we have a variabel with type
+				//System.out.println(nameColonType);
+				String[] varTypeAndName = nameColonType.split(":");
+				// first entry is varName, second varType
+				parameters += varTypeAndName[1] + " " + varTypeAndName[0]+";\n";
+				//System.out.println(parameters);
+				this.printWriter.write(parameters);
+				//System.out.println("Parameters: "+parameters);
+			}
+		} else if(properties[1] != null) {
+			String visuals = properties[0];
+			String nameColonType = properties[1];
+			parameters +="\t"; //indent for declaration
+			if(visuals.contains("p")) parameters += "public ";
+			if(visuals.contains("o")) parameters += "protected ";
+			if(visuals.contains("r")) parameters += "private ";
+			if(visuals.contains("s")) parameters += "static ";
+			if(visuals.contains("c")) { // generate constructor
+				parameters += "public void ";
+				String constructorHeader = nameColonType;
+				constructorHeader = constructorHeader.substring(0, constructorHeader.indexOf("(")) + "("+this.generateMethodParameters(constructorHeader)+")";
+				constructorHeader += "{ \n";
+				constructorHeader += "\t}\n\n";
+				this.printWriter.write(parameters + constructorHeader);
+				
+			} else if(visuals.contains("a")) { // abstract method of abstract class
+				parameters += "abstract void ";
 				String methodName = nameColonType;
 				// methodName = name of method ( methodParameters );
 				methodName = methodName.substring(0, methodName.indexOf("(")) + "("+this.generateMethodParameters(methodName)+")";
@@ -402,6 +449,7 @@ public class Parser {
 				this.printWriter.write(parameters);
 
 			} else if(visuals.contains("m")) { 
+				parameters += "void ";
 				String methodName = nameColonType;
 				methodName = methodName.substring(0, methodName.indexOf("(")) + "("+this.generateMethodParameters(methodName)+")";
 				parameters += methodName +" { \n\t}\n\n";
@@ -415,15 +463,11 @@ public class Parser {
 				this.printWriter.write(parameters);
 				//System.out.println("Parameters: "+parameters);
 			}
-		} else { // no method, we have a variabel with type
-			// Note: duplicated code, but only two lines
-			//System.out.println(nameColonType);
-			String[] varTypeAndName = nameColonType.split(":");
-			// first entry is varName, second varType
-			parameters += varTypeAndName[1] + " " + varTypeAndName[0]+";\n";
-			//System.out.println(parameters);
-			this.printWriter.write(parameters);
-			//System.out.println("Parameters: "+parameters);
+		} else { 
+			// don't know what to do, because we have not enough parameters
+			System.out.println("Warning: not enough parameters in "+properties.toString());
+			System.out.print("as ");
+			for(String s : properties) System.out.println(s);
 		}
 		
 	}
@@ -437,7 +481,7 @@ public class Parser {
 			
 			if(getterOrSetter.contains("G")) {
 				// generate Getter
-				String getterHeader = "\t"+"public get";
+				String getterHeader = "\t"+"public "+ type +" get";
 				String upperName = Parser.upperCaseFirstLetter(name);
 				getterHeader += upperName+"() {\n";
 				//System.out.println(getterHeader);
@@ -449,7 +493,7 @@ public class Parser {
 			}
 			if(getterOrSetter.contains("S")) {
 				//generate Setter
-				String setterstring = "\t"+"public set";
+				String setterstring = "\t"+"public void set";
 				String upperName = Parser.upperCaseFirstLetter(name);
 				setterstring += upperName + "("+type+" "+name+") {\n";
 				setterstring += "\t\t"+"this."+name+" = "+name+";\n";
@@ -475,6 +519,7 @@ public class Parser {
 		Parser p = new Parser();
 		System.out.println("juchu");
 		System.out.println("Working dir: " + System.getProperty("user.dir"));
+		//System.out.println("GS".matches("^(G.*|S-*)"));
 		
 	}
 
