@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class Parser {
@@ -18,15 +19,60 @@ public class Parser {
 	public PrintWriter printWriter;
 	public Stack<String> classStack = new Stack<String>();
 	public Stack<Integer> tabsCount = new Stack<Integer>();
+	//public JavaGenerator java;
+	//public PhpGenerator php;
+	public ArrayList<Generator> genList = new ArrayList<Generator>();
 	
-	public final int VISUALS = 0;
-	public final int NAME_COLON_TYPE = 1;
-	public final int GETTER_OR_SETTER = 2;
+	public void initGenerators() throws Exception {
+		String phpString = "source/php";
+		String javaString = "source/java";
+		Path phpPath = Paths.get(phpString);
+		Path javaPath = Paths.get(javaString);
+		Files.createDirectories(javaPath);
+		Files.createDirectories(phpPath);
+		
+		genList.add(new JavaGenerator(javaPath));
+		genList.add(new PhpGenerator(phpPath));
+	}
+	
+	public void allNewClass(String line) throws Exception {
+		for(Generator g: this.genList) {
+			g.generateNewClass(line);
+		}
+	}
+	
+	public void allProperties(String line) throws Exception {
+		for(Generator g: this.genList) {
+			g.generateProperties(line);
+		}
+	}
+	
+	public void allInterfaceOrAbstractClass(String line) throws Exception {
+		for(Generator g: this.genList) {
+			g.generateInterfaceOrAbstractClass(line);
+		}
+	}
+	
+	public void allExtendedClass(String line, String father) throws Exception {
+		for(Generator g: this.genList) {
+			g.generateExtendedClass(line, father);
+		}
+		
+	}
+	
+	public void allClose() {
+		for(Generator g: this.genList) {
+			g.closeLastClassAndDeleteCommentsOfTrimmedLine("");
+		}
+	}
+	
+
 	
 	// Note: construtoc, abstract class and method are very similar -> into one method? 
 	// use File.separator; as / or \ on Windows
 	public Parser() {
 		Path path = Paths.get("source");
+		Path javaPath = Paths.get("source/java");
 		System.out.println(path.toString());
 		String ich = "hello";
 		boolean exists = Files.exists(path,LinkOption.NOFOLLOW_LINKS);
@@ -36,11 +82,12 @@ public class Parser {
 		} else {
 			try {
 				Files.createDirectories(path);
+				this.initGenerators();
 				System.out.println("Succefully created directory ["+path.toString()+"]");
 				this.createFiles(path);
 				
 				
-			} catch (IOException e) {
+			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
 				System.out.println("Error: cannot create root-directory [source]!");
@@ -65,17 +112,17 @@ public class Parser {
 
 			    if(line.matches("^[A-Z].*")) { // start of line with capital character, hence start a new class (and close the old one
 			    		// parse new class
-			    		this.generateNewClass(p, line);
+			    		this.allNewClass(line);
 			    		// clear stacks and push new class
 			    		this.classStack.removeAllElements();
 			    		this.classStack.push(line);
 			    		this.tabsCount.removeAllElements();
 			    		this.tabsCount.push(this.countTabs(line)); // should be 0
 
-			    } else { // start with a small letter or < (no capublic int al letter)
+			    } else { // start with a small letter or < (no capital letter)
 			    	// check properties and interface or abstract class
-			    	this.generateProperties(line);
-			    	this.generateInterfaceOrAbstractClass(p,line);
+			    	this.allProperties(line);
+			    	this.allInterfaceOrAbstractClass(line);
 
 					// we are in else part of ^[A-Z].*
 			    	// stack works correctly
@@ -94,15 +141,15 @@ public class Parser {
 			    					 this.classStack.push(oldClass);
 			    					 this.tabsCount.push(oldTabsCount);
 			    					 // create new class with father above
-			    					 this.generateExtendedClass(p, line, oldClass);
+			    					 this.allExtendedClass(line, oldClass);
 			    					 // add actual class to stacks
 			    					 this.classStack.push(line);
 			    					 this.tabsCount.push(tabsCount);
 			    				 } else {
 			    					 //toDo: Reason ???
 					    			 System.out.println("No class found but property: "+line);
-					    			 this.generateProperties(line);
-					    			 this.generateInterfaceOrAbstractClass(p, line);
+					    			 this.allProperties(line);
+					    			 this.allInterfaceOrAbstractClass(line);
 			    				 }
 			    			 }
 			    			 if(oldTabsCount > tabsCount){
@@ -116,7 +163,7 @@ public class Parser {
 			    				 //int fatherInt = this.tabsCount.pop();
 			    				 System.out.println("found Father "+father+" for "+line);
 			    				 //System.out.println("XXX");
-			    				 this.generateExtendedClass(p, line, father);
+			    				 this.allExtendedClass(line, father);
 			    				 // save father class (back) for futher inheritance
 			    				 //this.tabsCount.push(fatherInt);
 			    				 //this.classStack.push(father);
@@ -133,7 +180,7 @@ public class Parser {
 			    					 // pop father from stack
 			    					 String father = this.classStack.pop();
 			    					 int fatherInt = this.tabsCount.pop();
-			    					 this.generateExtendedClass(p, line, father);
+			    					 this.allExtendedClass(line, father);
 			    					 // push father back to stack for further inheritance
 			    					 this.classStack.push(father);
 			    					 this.tabsCount.push(fatherInt);
@@ -141,16 +188,16 @@ public class Parser {
 			    					 
 			    				 } else { // line starts with small letter
 			    					 System.out.println("found property "+line);
-			    					 this.generateProperties(line);
+			    					 this.allProperties(line);
 			    					 // extend interfaces?
-			    					 this.generateInterfaceOrAbstractClass(p, line);
+			    					 this.allInterfaceOrAbstractClass(line);
 			    				 }
 			    			 }
 			    		 } else { // no father class availible
 			    			 line = line.trim(); // remove tabs
 			    			 System.out.println("No class found but line: "+line);
-			    			 this.generateProperties(line);
-			    			 this.generateInterfaceOrAbstractClass(p, line);
+			    			 this.allProperties(line);
+			    			 this.allInterfaceOrAbstractClass(line);
 			    		 }
 		
 			    	 }
@@ -160,9 +207,8 @@ public class Parser {
 			    
 			    
 			  } // while br.readLine != null
-			  // close the current file
-			  this.printWriter.write("}\n");
-			  this.printWriter.close();
+			  // close the current files
+			  this.allClose();
 			  
 		} catch (Exception e) { // try catch
 			// TODO Auto-generated catch block
@@ -179,330 +225,43 @@ public class Parser {
 		}
 		return tabs;
 	}
-
+/*
 	public void generateInterfaceOrAbstractClass(Path p, String line) throws Exception {
-    	if(line.matches("^<I.*|^<A.*")) {
-        	line = line.replaceFirst("//.*", ""); // kill all lineending comments (starting with //)
-        	line = line.trim();
-        	// close previous class or interface
-        	this.printWriter.write("}\n");
-        	this.printWriter.close();
-        	
-    		if(line.matches("^<I.*")) {
-    			// create Interface
-    			line = line.replaceAll("^<I\\s", ""); // delete leading interface marker with empty space at the end
-    			String iName = line;
-    			this.printWriter = new PrintWriter(p.toString()+"/"+iName+".java");
-    			this.printWriter.write("public interface "+iName+" {\n");
-    			System.out.println("Interface "+line);
-    		}
-    		if(line.matches("^<A.*")) {
-    			// create abstract class
-    			line = line.replaceAll("^<A\\s", ""); // delete leading abstract class
-    			String aName = line;
-    			this.printWriter = new PrintWriter(p.toString()+"/"+aName+".java");
-    			this.printWriter.write("public abstract class "+aName+" {\n");
-    			System.out.println("Abstract class "+line);
-    		}
-    	 }
+
 	}
-	
+
 	public String[] generateProperties(String line) throws Exception {
-		String[] properties = new String[3];
-		// init with nulls
-		for(String prop: properties) prop = null;
-		
-		
-		 // start with public,protected,private,constructor,static,method,abstract method
-		if(line.matches("^p.*|^o.*|^r.*|^c.*|^s.*|^m.*|^a.*")) {
-    		//System.out.println(line);
-    		String[] params = line.split("\\s");
-    		//for(String param: params)System.out.println(param);
-    		//System.out.println(params.length);
-    		int counter = 0;
-    		boolean getterOrSetter = false;
-    		while(counter < params.length) {
-    			if(counter == 0) properties[VISUALS] = params[counter];
-    			if(counter == 1) properties[NAME_COLON_TYPE] = params[counter];
-    			if(counter == 2)  {
-    				getterOrSetter = params[counter].matches("^(G.*|S.*)"); // match G or S at the beginning
-      				properties[GETTER_OR_SETTER] = params[counter];
-    			}
-    			counter++;
-    		}
-    		//System.out.println(visuals+nameColonType+getterOrSetter);
-    		counter = 0;
-
-    		
-        	this.generateVisuals(properties);
-    		if(getterOrSetter) this.generateGetterOrSetter(properties[GETTER_OR_SETTER], properties[NAME_COLON_TYPE]);
-
-		}
-		
-		return properties;
 
 	}
 
 	public void generateExtendedClass(Path p, String line, String father) throws Exception {
-    	// close and end last file
-    	this.printWriter.write("}\n");
-    	this.printWriter.close();
-    	line = line.replaceFirst("//.*", ""); // kill all lineending comments (starting with //)
-    	line = line.trim(); // delete surrounding whitespaces
-    	
-    	if(line.matches("^\\w+")) { // line contains no whitespace
-    		//now we have detect a simple class beginning at the start of the line
-    		String className = line;
-    		this.printWriter = new PrintWriter(p.toString()+"/"+className+".java");
-    		this.printWriter.write("public class "+className+" extends "+father+"{\n");
-    		//writer.write("}\n");
-    		//writer.close();
-    		System.out.println("Created extended class ("+className+") from "+father);
-    	} else { // line contains whitespaces
-    		String[] params = line.split("\\s"); // split params by whitespace
-    		String className = params[0];
-    		String headLine = "";
-    		for(String param: params) {
-    			switch(param) {
-    				case "e":
-    					// attention: double inheritance is forbidden
-    					//headLine += "extends ";
-    					break;
-    				case "i":
-    					headLine += "implements ";
-    					break;
-    				default:
-    					// dont insert classname because class will be extended
-    					if(param != className) headLine += param + " ";
-    					break;
-    			}
-    		}
-    		headLine += "{\n";
 
-    		this.printWriter = new PrintWriter(p.toString()+"/"+className+".java");
-    		this.printWriter.write("public class "+className+" extends "+father+" "+headLine);
-    		System.out.println("Complex class ("+headLine+") created from "+father);
-    	}
     	
 	}
+
 	
 	public void generateNewClass(Path p, String line) throws Exception {
-    	// close and end last file
-    	this.printWriter.write("}\n");
-    	this.printWriter.close();
 
-    	line = line.replaceFirst("//.*", ""); // kill all lineending comments (starting with //)
-    	line = line.trim(); // delete surrounding whitespaces
-    	//System.out.println(line);
-    	if(line.matches("^\\w+")) { // line contains no whitespace
-    		//now we have detect a simple class beginning at the start of the line
-    		String className = line;
-    		this.printWriter = new PrintWriter(p.toString()+"/"+className+".java");
-    		this.printWriter.write("public class "+className+" {\n");
-    		//writer.write("}\n");
-    		//writer.close();
-    		System.out.println("Created simple class ("+className+")");
-    	} else { // line contains whitespaces
-    		String[] params = line.split("\\s"); // split params by whitespace
-    		String className = params[0];
-    		String headLine = "";
-    		for(String param: params) {
-    			switch(param) {
-    				case "e":
-    					headLine += "extends ";
-    					break;
-    				case "i":
-    					headLine += "implements ";
-    					break;
-    				default:
-    					headLine += param + " ";
-    					break;
-    			}
-    		}
-    		headLine += "{\n";
+	}
 
-    		this.printWriter = new PrintWriter(p.toString()+"/"+className+".java");
-    		this.printWriter.write("public class "+headLine);
-    		System.out.println("Complex class ("+headLine+") created");
-    	}
-	}
 	
-	
-	public String generateMethodParameters(String line) {
-		String methodParameters = "";
-		if(line.matches(".*(.+).*")) {
-			line = line.trim();
-			int start = line.indexOf('(')+1; //right from (
-			int end = line.indexOf(')'); // left from ) - note substring method does not include end char itself
-			if(start < end) {
-				String parameterString = line.substring(start, end);
-				methodParameters = this.parseParameterString(parameterString);
-				
-			}
-		}
-			return methodParameters;
-	}
+
 	
 	public String parseParameterString(String paramLine) {
-		paramLine = paramLine.trim();
-		Stack<String> paramStack = new Stack<String>();
-		String parameters = "";
-		while(paramLine != "") {
-			CharSequence comma = ",";
-			if(paramLine.contains(comma)) {
-				int start = paramLine.lastIndexOf(',');
-				int end = paramLine.length();
-				String subString = paramLine.substring(start+1, end);
-				System.out.println(subString);
-				Parameter p = new Parameter(subString);
-				String init = p.getInitNotation();
-				if(subString.equals(init)) {
-					paramStack.push(p.toString());
-					paramLine = paramLine.substring(0, start);
-				}
-			} else { // first parameter
-				Parameter p = new Parameter(paramLine);
-				String init = p.getInitNotation();
-				if( (paramLine.equals(init)) && p.notNull() ) {
-					paramStack.push(p.toString());
-					paramLine = "";
-				}
-			}
-		}
-		
-		while(!paramStack.isEmpty()) {
-			String param = paramStack.pop();
-			if(!paramStack.isEmpty()) parameters += param+", ";
-			else parameters += param;
-		}
-		
-		return parameters;
+
 	}
+*/
 	
-	
+/*
 	public void generateVisuals(String[] properties) throws Exception {
-		String parameters = "";
-		if(properties[2] != null) {
-			String visuals = properties[0];
-			String nameColonType = properties[1];
-			String headerLine = properties[2];
-			//System.out.println(visuals);
-			//System.out.println(visuals.contains("p"));
-			parameters +="\t"; //indent for declaration
-			if(visuals.contains("p")) parameters += "public ";
-			if(visuals.contains("o")) parameters += "protected ";
-			if(visuals.contains("r")) parameters += "private ";
-			if(visuals.contains("s")) parameters += "static ";
-			if(visuals.contains("c")) { // generate constructor
-				parameters += "public ";
-				String constructorHeader = nameColonType;
-				constructorHeader = constructorHeader.substring(0, constructorHeader.indexOf("(")) + "("+this.generateMethodParameters(constructorHeader)+")";
-				constructorHeader += "{ \n";
-				constructorHeader += "\t}\n\n";
-				this.printWriter.write(parameters + constructorHeader);
-				
-			} else if(visuals.contains("a")) { // abstract method of abstract class
-				parameters += "abstract " + nameColonType + " ";
-				String methodName = headerLine;
-				// methodName = name of method ( methodParameters );
-				methodName = methodName.substring(0, methodName.indexOf("(")) + "("+this.generateMethodParameters(methodName)+")";
-				parameters += methodName +";\n";
-				this.printWriter.write(parameters);
 
-			} else if(visuals.contains("m")) { 
-				parameters += nameColonType+" ";
-				String methodName = headerLine;
-				methodName = methodName.substring(0, methodName.indexOf("(")) + "("+this.generateMethodParameters(methodName)+")";
-				parameters += methodName +" { \n\t}\n\n";
-				this.printWriter.write(parameters);
-			} else { // no method, we have a variabel with type
-				//System.out.println(nameColonType);
-				String[] varTypeAndName = nameColonType.split(":");
-				// first entry is varName, second varType
-				parameters += varTypeAndName[1] + " " + varTypeAndName[0]+";\n";
-				//System.out.println(parameters);
-				this.printWriter.write(parameters);
-				//System.out.println("Parameters: "+parameters);
-			}
-		} else if(properties[1] != null) {
-			String visuals = properties[0];
-			String nameColonType = properties[1];
-			parameters +="\t"; //indent for declaration
-			if(visuals.contains("p")) parameters += "public ";
-			if(visuals.contains("o")) parameters += "protected ";
-			if(visuals.contains("r")) parameters += "private ";
-			if(visuals.contains("s")) parameters += "static ";
-			if(visuals.contains("c")) { // generate constructor
-				parameters += "public void ";
-				String constructorHeader = nameColonType;
-				constructorHeader = constructorHeader.substring(0, constructorHeader.indexOf("(")) + "("+this.generateMethodParameters(constructorHeader)+")";
-				constructorHeader += "{ \n";
-				constructorHeader += "\t}\n\n";
-				this.printWriter.write(parameters + constructorHeader);
-				
-			} else if(visuals.contains("a")) { // abstract method of abstract class
-				parameters += "abstract void ";
-				String methodName = nameColonType;
-				// methodName = name of method ( methodParameters );
-				methodName = methodName.substring(0, methodName.indexOf("(")) + "("+this.generateMethodParameters(methodName)+")";
-				parameters += methodName +";\n";
-				this.printWriter.write(parameters);
-
-			} else if(visuals.contains("m")) { 
-				parameters += "void ";
-				String methodName = nameColonType;
-				methodName = methodName.substring(0, methodName.indexOf("(")) + "("+this.generateMethodParameters(methodName)+")";
-				parameters += methodName +" { \n\t}\n\n";
-				this.printWriter.write(parameters);
-			} else { // no method, we have a variabel with type
-				//System.out.println(nameColonType);
-				String[] varTypeAndName = nameColonType.split(":");
-				// first entry is varName, second varType
-				parameters += varTypeAndName[1] + " " + varTypeAndName[0]+";\n";
-				//System.out.println(parameters);
-				this.printWriter.write(parameters);
-				//System.out.println("Parameters: "+parameters);
-			}
-		} else { 
-			// don't know what to do, because we have not enough parameters
-			System.out.println("Warning: not enough parameters in "+properties.toString());
-			System.out.print("as ");
-			for(String s : properties) System.out.println(s);
-		}
-		
 	}
-	
+*/
+/*
 	public void generateGetterOrSetter(String getterOrSetter, String nameColonType) throws Exception {
-		if(getterOrSetter != null) {
-			//generate Getters and Setters
-			String[] varTypeAndName = nameColonType.split(":");
-			String type = varTypeAndName[1];
-			String name = varTypeAndName[0];
-			
-			if(getterOrSetter.contains("G")) {
-				// generate Getter
-				String getterHeader = "\t"+"public "+ type +" get";
-				String upperName = Parser.upperCaseFirstLetter(name);
-				getterHeader += upperName+"() {\n";
-				//System.out.println(getterHeader);
-				this.printWriter.write(getterHeader);
-				this.printWriter.write("\t\t"+"return this."+name+";\n");
-				this.printWriter.write("\t"+"}\n");
-				
-				
-			}
-			if(getterOrSetter.contains("S")) {
-				//generate Setter
-				String setterstring = "\t"+"public void set";
-				String upperName = Parser.upperCaseFirstLetter(name);
-				setterstring += upperName + "("+type+" "+name+") {\n";
-				setterstring += "\t\t"+"this."+name+" = "+name+";\n";
-				setterstring += "\t"+"}\n";
-				//System.out.println(setterstring);
-				this.printWriter.write(setterstring);
-			}
-		}
+
 	}
+*/
 	
 	public static String upperCaseFirstLetter(String text) {
 		char capitalLetter = text.charAt(0);
