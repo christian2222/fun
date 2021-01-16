@@ -131,7 +131,7 @@ public class ProjPoint<T extends Number> {
 				lambda = this.field.div(numerator,denominator);
 				// nue = (-x1*x1 + a4*x1 + 2*a6 - a3*y1) * invert(2*y1 + a1*x1 + a3); 
 				numerator = this.field.add(twoA6,this.field.mult(a4, x1));
-				numerator = this.field.sub(this.field.sub(numerator, this.field.mult(x1, x1)),this.field.mult(a3, y1));
+				numerator = this.field.sub(this.field.sub(numerator, this.field.square(x1)),this.field.mult(a3, y1));
 				nue = this.field.div(numerator, denominator);
 			} else { // x1!=x2
 				// denominator = x2-x1
@@ -144,7 +144,7 @@ public class ProjPoint<T extends Number> {
 				nue = this.field.div(numerator, denominator);
 			}
 			// x3 = lambda*lambda + a1*lambda -a2 -x1 -x2;
-			x3 = this.field.add(this.field.mult(lambda, lambda), this.field.mult(a1, lambda));
+			x3 = this.field.add(this.field.square(lambda), this.field.mult(a1, lambda));
 			x3 = this.field.sub(this.field.sub(this.field.sub(x3, a2), x1), x2);
 			// y3 = -(lambda+a1)*x3 - nue - a3;
 			y3 = this.field.invertAdd(this.field.mult(this.field.add(lambda, a1), x3));

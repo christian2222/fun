@@ -1,4 +1,4 @@
-package communication;
+package rsa;
 
 public class Translator {
 

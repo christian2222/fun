@@ -1,4 +1,4 @@
-package communication;
+package rsa;
 
 import java.util.Random;
 
