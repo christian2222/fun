@@ -1,4 +1,4 @@
-package newField;
+package ecc;
 
 public class Real extends Field<Double> {
 

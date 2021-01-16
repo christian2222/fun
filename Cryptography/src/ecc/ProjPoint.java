@@ -1,4 +1,4 @@
-package newField;
+package ecc;
 
 
 public class ProjPoint<T extends Number> {
@@ -11,11 +11,11 @@ public class ProjPoint<T extends Number> {
 	protected Field<T> field;
 	protected boolean isProjectiveZero = false;
 	
-	public ProjPoint(EllipticCurve<T> curve, T x, T y, Field<T> field) {
+	public ProjPoint(EllipticCurve<T> curve, T x, T y) {
 		this.curve = curve;
 		this.x = x;
 		this.y = y;
-		this.field = field;
+		this.field = curve.getField();
 		this.isProjectiveZero = false;
 	}
 	
@@ -24,7 +24,7 @@ public class ProjPoint<T extends Number> {
 	}
 	
 	public ProjPoint<T> createNewProjPointOnSameCurveAndField(T x, T y) {
-		ProjPoint<T> newPoint = new ProjPoint<T>(this.curve, x, y, this.field);
+		ProjPoint<T> newPoint = new ProjPoint<T>(this.curve, x, y);
 		return newPoint;
 	}
 	
@@ -117,10 +117,10 @@ public class ProjPoint<T extends Number> {
 			T nue;
 			T numerator;
 			T denominator;
-			T twoY1 = this.field.add(y1, y1);
-			T threeX1 = this.field.add(this.field.add(x1,x1),x1);
-			T twoA6 = this.field.add(a6, a6);
-			T twoA2 = this.field.add(a2, a2);
+			T twoY1 = this.field.twoTimes(y1);
+			T threeX1 = this.field.threeTimes(x1);
+			T twoA6 = this.field.twoTimes(a6);
+			T twoA2 = this.field.twoTimes(a2);
 			if(x1.equals(x2)) { // x1 == x2; note that we need to use equals because of reference equivalences
 				//denominator = 2*y1 + a1*x1 + a3
 				denominator = this.field.add(this.field.add(twoY1,this.field.mult(a1, x1)),a3);
@@ -150,7 +150,7 @@ public class ProjPoint<T extends Number> {
 			y3 = this.field.invertAdd(this.field.mult(this.field.add(lambda, a1), x3));
 			y3 = this.field.sub(this.field.sub(y3, nue), a3);
 			
-			return new ProjPoint<T>(this.curve,x3,y3,this.field);
+			return new ProjPoint<T>(this.curve,x3,y3);
 			
 		} else { // q is projective ZERO
 			// do nothing in projective addition
@@ -169,8 +169,8 @@ public class ProjPoint<T extends Number> {
 		T z = field.mult(field.add(x, y),y);
 		System.out.println(z.intValue());
 		z = field.invertMult(z);
-		if(field.getClass().toString().equalsIgnoreCase("class newField.Fp")) System.out.println(z.intValue());
-		if(field.getClass().toString().equalsIgnoreCase("class newField.Real")) System.out.println(z.doubleValue());
+		if(field.getClass().toString().equalsIgnoreCase("class ecc.Fp")) System.out.println(z.intValue());
+		if(field.getClass().toString().equalsIgnoreCase("class ecc.Real")) System.out.println(z.doubleValue());
 		if(field.isZero(z)) {
 			System.out.println(0);
 		}
@@ -189,13 +189,13 @@ public class ProjPoint<T extends Number> {
 	public void checkIntegrity() {
 		final String varInt = "class java.lang.Integer";
 		final String varDoub = "class java.lang.Double";
-		final String fieldInt = "class newField.Fp";
-		final String fieldDoub = "class newField.Real";
+		final String fieldInt = "class ecc.Fp";
+		final String fieldDoub = "class ecc.Real";
 		String xType = x.getClass().toString();
 		String yType = y.getClass().toString();
 		String fieldType = field.getClass().toString();
 		System.out.println(xType.equalsIgnoreCase("class java.lang.Integer"));
-		System.out.println(fieldType.equalsIgnoreCase("class newField.Fp"));
+		System.out.println(fieldType.equalsIgnoreCase("class ecc.Fp"));
 		if(xType.equalsIgnoreCase(varInt) && yType.equalsIgnoreCase(varInt) && (fieldType.equalsIgnoreCase(fieldInt))) {
 			System.out.println("Calculation in Fp");
 			return;

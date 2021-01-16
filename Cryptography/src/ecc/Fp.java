@@ -1,4 +1,4 @@
-package newField;
+package ecc;
 
 import algorithms.ExpandedEuclideanAlgorithm;
 
