@@ -1,4 +1,4 @@
-package rsa;
+package algorithms;
 
 import java.util.Random;
 
@@ -20,7 +20,7 @@ public class PrimeGenerator {
 		
 	}
 	
-	protected static boolean isPrime(int p) {
+	public static boolean isPrime(int p) {
 		if(p < 2) return false;
 		if(p == 2) return true;
 		for(long div = 2; div < p; div++) {

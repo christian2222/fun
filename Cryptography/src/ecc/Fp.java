@@ -1,6 +1,7 @@
 package ecc;
 
 import algorithms.ExpandedEuclideanAlgorithm;
+import algorithms.PrimeGenerator;
 
 public class Fp extends Field<Integer> {
 
@@ -17,8 +18,10 @@ public class Fp extends Field<Integer> {
 		return x;
 	}
 	
+	private boolean isPrimeField() {
+		return PrimeGenerator.isPrime(this.prime);
+	}
 	
-
 
 	@Override
 	public Integer add(Integer x, Integer y) {
@@ -57,6 +60,12 @@ public class Fp extends Field<Integer> {
 	public boolean isZero(Integer x) {
 		// TODO Auto-generated method stub
 		return x.intValue() == 0;
+	}
+
+	@Override
+	public boolean isField() {
+		// TODO Auto-generated method stub
+		return this.isPrimeField();
 	}
 
 }

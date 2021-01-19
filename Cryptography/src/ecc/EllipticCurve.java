@@ -34,6 +34,8 @@ public class EllipticCurve<T extends Number> {
 		this.a3 = a3;
 		this.a4 = a4;
 		this.a6 = a6;
+		if(!this.isNonSingular()) System.out.println("WARNING: Elliptic curve is singular!");
+		if(!field.isField()) System.out.println("WARNING: You don't calculate over a field!");
 	}
 	
 

@@ -39,6 +39,12 @@ public class Real extends Field<Double> {
 		return x.doubleValue() == 0.0;
 	}
 
+	@Override
+	public boolean isField() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 	
 
 }

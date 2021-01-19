@@ -82,8 +82,7 @@ public class RsaPerson extends Person {
 		if(this.checkForeignKeyPair(this.foreignPublicKey)) {
 			long foreignE = this.foreignPublicKey[0];
 			long foreignN = this.foreignPublicKey[1];
-			ExponentationModuloN expN = new ExponentationModuloN(this.message, foreignE, foreignN);
-			long decoded = expN.evaluate();
+			long decoded = ExponentationModuloN.calculate(this.message, foreignE,foreignN);
 			this.logger += "decoding: ";
 			this.logger += this.message+"^"+foreignE+"%"+foreignN+"="+decoded+"\n";
 			return decoded;
@@ -114,8 +113,7 @@ public class RsaPerson extends Person {
 		ExpandedEuclideanAlgorithm eea = new ExpandedEuclideanAlgorithm();
 		eea.runAlgortihm(message, this.N);
 		this.logger += "("+this.message+","+this.N+")="+eea.getGcd()+"\n";
-		ExponentationModuloN expN = new ExponentationModuloN(this.message, this.privateKey, this.N);
-		long codedMessage = expN.evaluate();
+		long codedMessage = ExponentationModuloN.calculate(this.message, this.privateKey, this.N);
 		this.logger += "encoding: ";
 		this.logger += this.message+"^"+this.privateKey+"%"+this.N+"= "+codedMessage;
 		this.message = codedMessage;

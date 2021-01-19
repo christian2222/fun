@@ -13,7 +13,9 @@ public abstract class Field<T extends Number> {
 	public abstract T invertMult(T x);
 	
 	public abstract boolean isZero(T x);
-
+	
+	public abstract boolean isField();
+	
 	
 	public T sub(T x, T y) {
 		return this.add(x,this.invertAdd(y));
