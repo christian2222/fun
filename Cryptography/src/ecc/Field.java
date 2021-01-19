@@ -16,6 +16,18 @@ public abstract class Field<T extends Number> {
 	
 	public abstract boolean isField();
 	
+	public abstract boolean isGreaterEqualZero(T x);
+	
+	public abstract boolean isF2();
+	
+	public abstract T get2();
+	
+	public abstract boolean hasSquareRoot(T x);
+	
+	public abstract T squareRootOf(T x);
+	
+	public abstract String toString();
+	
 	
 	public T sub(T x, T y) {
 		return this.add(x,this.invertAdd(y));

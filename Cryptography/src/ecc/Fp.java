@@ -2,6 +2,7 @@ package ecc;
 
 import algorithms.ExpandedEuclideanAlgorithm;
 import algorithms.PrimeGenerator;
+import algorithms.TonelliShanks;
 
 public class Fp extends Field<Integer> {
 
@@ -66,6 +67,57 @@ public class Fp extends Field<Integer> {
 	public boolean isField() {
 		// TODO Auto-generated method stub
 		return this.isPrimeField();
+	}
+
+	@Override
+	public boolean isGreaterEqualZero(Integer x) {
+		// TODO Auto-generated method stub
+		return x.intValue() >= 0;
+	}
+
+	@Override
+	public boolean isF2() {
+		// TODO Auto-generated method stub
+		return this.prime == 2;
+	}
+
+	@Override
+	public Integer get2() {
+		// TODO Auto-generated method stub
+		if(this.isF2()) {
+			System.out.println("WARNING: Cannot invert 2 because we are in F2!");
+			return Integer.valueOf(1);
+		}
+		return Integer.valueOf(2);
+	}
+
+	@Override
+	public boolean hasSquareRoot(Integer x) {
+		// TODO Auto-generated method stub
+		return TonelliShanks.hasQuadraticRoot(x, this.prime);
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		if(this.isField()) {
+			return "F"+this.prime;
+		}
+		return "no Field";
+	}
+
+	@Override
+	public Integer squareRootOf(Integer x) {
+		// TODO Auto-generated method stub
+		if(this.isF2()) {
+			System.out.println("WARNING: Cannot build sqaureRootOf("+x+") since we are in F2");
+			return Integer.valueOf(1);
+		}
+		if(this.hasSquareRoot(x)) {
+			return TonelliShanks.runAlgorithm(x, this.prime);			
+		}
+		System.out.println("WRNING: No squareRootOf("+x+") modulo "+this.prime+" found!");
+		return Integer.valueOf(1);
 	}
 
 }

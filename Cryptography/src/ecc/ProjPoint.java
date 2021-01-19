@@ -12,11 +12,18 @@ public class ProjPoint<T extends Number> {
 	protected boolean isProjectiveZero = false;
 	
 	public ProjPoint(EllipticCurve<T> curve, T x, T y) {
-		this.curve = curve;
-		this.x = x;
-		this.y = y;
-		this.field = curve.getField();
 		this.isProjectiveZero = false;
+		this.curve = curve;
+		this.field = curve.getField();
+		this.x = x;
+		if(this.foundStartingPointOnX()) {
+			this.y = this.calculateStratingPointOnX();
+			System.out.println("Note: calculated starting point dependent on x="+this.x);
+			System.out.println("Now (x,y) is a point on the elliptic curve");
+		} else {
+			System.out.println("WARNING: No Point on curve found!");
+			this.y = y;
+		}
 	}
 	
 	protected ProjPoint() {
@@ -156,6 +163,70 @@ public class ProjPoint<T extends Number> {
 			// do nothing in projective addition
 			return this;
 		}
+	}
+	
+	// solve weierstrass-gleichung = 0 to y
+	// hence y^2 + a1*x*y + a3*y -x^3 - a2*x^2 -a4*x -a6 = 0
+	// we get the discriminant D= 4*x^3 + b2*x^2 +2*b4*x + b6, where b2,b4,b6 are the same as in the elliptic curve
+	protected T calculateDiscriminantToWeierstrassIsZero() {
+		T discriminant;
+		this.curve.calculateBs();
+		T b2 = this.curve.getB2();
+		T b4 = this.curve.getB4();
+		T b6 = this.curve.getB6();
+		
+		T fourXPow3 = this.field.fourTimes(this.field.cube(this.x));
+		T b2xSquare = this.field.mult(b2, this.field.square(this.x));
+		T twoB4x = this.field.mult(this.field.twoTimes(b4),this.x);
+		
+		discriminant = this.field.add(this.field.add(fourXPow3, b2xSquare), this.field.add(twoB4x,b6));
+		return discriminant;
+	}
+	
+	// Weierstrass-Discriminant > 0
+	public boolean hasSolutionsDependingOnX() {
+		return !this.field.isGreaterEqualZero(this.calculateDiscriminantToWeierstrassIsZero());
+	}
+	
+	// y1/2 = -(a1*x+a3)/2 +- squareRootOf(discriminant)/2
+	public T calculateStratingPointOnX() {
+		if(!this.hasSolutionsDependingOnX()) {
+			System.out.println("WARNING: Weierstrass-Equation could not be solved to y");
+			System.out.println("Choose another x-value");
+			return null;
+		}
+		if(this.field.isF2()) {
+			System.out.println("WARNING: You are in F2, where you cannot calculate the Discriminant");
+			return null;
+		}
+
+
+		T discriminant = this.calculateDiscriminantToWeierstrassIsZero();
+		T y;
+		
+		if(!this.field.hasSquareRoot(discriminant)) {
+			System.out.println("WARNING: Cannot find squareRoot("+discriminant+")!");
+			System.out.println("Note: Your are in "+ this.field);
+			return null;
+		}
+		
+		if(this.field.isGreaterEqualZero(discriminant)) {
+			T a1XplusA3 = this.field.add(this.field.mult(this.curve.getA1(), this.x),this.curve.getA3());
+			// y = -(a1*x + a3)/2
+			y = this.field.mult(a1XplusA3,this.field.invertMult(this.field.get2()));
+			y = this.field.invertAdd(y);
+			// y = -(a1*x + a3)/2 + squareRoot(discriminant)/2
+			y = this.field.add(y, this.field.mult(this.field.squareRootOf(discriminant),this.field.invertMult(this.field.get2())));
+		} else {
+			System.out.println("WARNING: Discriminant "+discriminant+" is smaller than 0");
+			return null;
+		}
+		
+		return y;
+	}
+	
+	public boolean foundStartingPointOnX() {
+		return this.calculateStratingPointOnX() != null;
 	}
 	
 	public String toString() {

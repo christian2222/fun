@@ -26,6 +26,7 @@ public class EllipticCurve<T extends Number> {
 	protected T discriminant;
 	
 	
+	
 	public EllipticCurve(Field<T> field, T a1, T a2, T a3, T a4, T a6) {
 		super();
 		this.field = field;
@@ -40,7 +41,7 @@ public class EllipticCurve<T extends Number> {
 	
 
 	// notes before Proposition 2.3.3
-	protected void calculateBs() {
+	public void calculateBs() {
 		T fourA2 = this.field.fourTimes(a2);
 		T fourA6 = this.field.fourTimes(a6);
 		T A2A6 = this.field.mult(a2, a6);
@@ -71,6 +72,8 @@ public class EllipticCurve<T extends Number> {
 		T addition = this.field.nineTimes(this.field.mult(b2, this.field.mult(b4, b6)));
 		this.discriminant = this.field.sub(addition, subtrahend);
 	}
+	
+
 	
 	protected boolean hasZeroDiscriminant() {
 		this.calculateDiscriminant();
@@ -105,6 +108,25 @@ public class EllipticCurve<T extends Number> {
 		return a6;
 	}
 
-	
+	public T getB2() {
+		return b2;
+	}
+
+
+	public T getB4() {
+		return b4;
+	}
+
+
+	public T getB6() {
+		return b6;
+	}
+
+
+	public T getB8() {
+		return b8;
+	}
+
+
 	
 }

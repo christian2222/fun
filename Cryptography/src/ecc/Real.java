@@ -45,6 +45,48 @@ public class Real extends Field<Double> {
 		return true;
 	}
 
+	@Override
+	public boolean isGreaterEqualZero(Double x) {
+		// TODO Auto-generated method stub
+		return x.doubleValue() >= 0;
+	}
+
+	@Override
+	public boolean isF2() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Double get2() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public boolean hasSquareRoot(Double x) {
+		// TODO Auto-generated method stub
+		return x.doubleValue() > 0;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "R";
+	}
+
+	@Override
+	public Double squareRootOf(Double x) {
+		// TODO Auto-generated method stub
+		if(this.isGreaterEqualZero(x)) {
+			return Double.valueOf(Math.sqrt(x.doubleValue()));
+		}
+		System.out.println("WARNING: No squareRootOf("+x.doubleValue()+") found!");
+		return Double.valueOf(1);
+	}
+
+
+
 	
 
 }
