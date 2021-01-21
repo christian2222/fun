@@ -8,6 +8,9 @@ public class Fp extends Field<Integer> {
 
 	protected int prime;
 	
+	// NO_SOLUTION could be null, but then we can't calculate further...
+	protected Integer NO_SOLUTION = Integer.valueOf(1);
+	
 	public Fp(int p) {
 		this.prime = p;
 	}
@@ -111,13 +114,13 @@ public class Fp extends Field<Integer> {
 		// TODO Auto-generated method stub
 		if(this.isF2()) {
 			System.out.println("WARNING: Cannot build sqaureRootOf("+x+") since we are in F2");
-			return Integer.valueOf(1);
+			return this.NO_SOLUTION;
 		}
 		if(this.hasSquareRoot(x)) {
 			return TonelliShanks.runAlgorithm(x, this.prime);			
 		}
 		System.out.println("WRNING: No squareRootOf("+x+") modulo "+this.prime+" found!");
-		return Integer.valueOf(1);
+		return this.NO_SOLUTION;
 	}
 
 }

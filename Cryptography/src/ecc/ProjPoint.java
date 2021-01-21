@@ -183,7 +183,7 @@ public class ProjPoint<T extends Number> {
 		return discriminant;
 	}
 	
-	// Weierstrass-Discriminant > 0
+	// Weierstrass-Discriminant >= 0
 	public boolean hasSolutionsDependingOnX() {
 		return !this.field.isGreaterEqualZero(this.calculateDiscriminantToWeierstrassIsZero());
 	}
@@ -210,19 +210,20 @@ public class ProjPoint<T extends Number> {
 			return null;
 		}
 		
+		// idea: use quadratic completion to generalize to Fp and R
+		// the discriminant remains the same, since we get
+		// [2y + (a1*x + a3)]^2 =4*x^3 + b2*x^2 + 2*b4*x + b6
+		// solve to 2y + (a1*x + a3) =: l
 		if(this.field.isGreaterEqualZero(discriminant)) {
-			T a1XplusA3 = this.field.add(this.field.mult(this.curve.getA1(), this.x),this.curve.getA3());
-			// y = -(a1*x + a3)/2
-			y = this.field.mult(a1XplusA3,this.field.invertMult(this.field.get2()));
-			y = this.field.invertAdd(y);
-			// y = -(a1*x + a3)/2 + squareRoot(discriminant)/2
-			y = this.field.add(y, this.field.mult(this.field.squareRootOf(discriminant),this.field.invertMult(this.field.get2())));
+			T l = this.field.squareRootOf(discriminant);
+			// as l = 2y + (a1*x + a3) we have that y = 1/2*(l - a1*x -a3)
+			T bracket = this.field.sub(this.field.sub(l, this.field.mult(this.curve.getA1(), x)),this.curve.getA3());
+			y = this.field.mult(this.field.invertMult(this.field.get2()), bracket);
+			return y;
 		} else {
 			System.out.println("WARNING: Discriminant "+discriminant+" is smaller than 0");
 			return null;
 		}
-		
-		return y;
 	}
 	
 	public boolean foundStartingPointOnX() {
