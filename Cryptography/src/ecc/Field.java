@@ -18,6 +18,8 @@ public abstract class Field<T extends Number> {
 	
 	public abstract boolean isGreaterEqualZero(T x);
 	
+	public abstract boolean isEqual(T x, T y);
+	
 	public abstract boolean isF2();
 	
 	public abstract T get2();

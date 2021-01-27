@@ -11,23 +11,32 @@ public class ProjPoint<T extends Number> {
 	protected Field<T> field;
 	protected boolean isProjectiveZero = false;
 	
-	protected int[] xSearchArray = new int[] {-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,15,20,25,50,75,100,150,200};
 	
 	public ProjPoint(EllipticCurve<T> curve, T x, T y) {
 		this.isProjectiveZero = false;
 		this.curve = curve;
 		this.field = curve.getField();
 		this.x = x;
-		if(this.foundStartingPointOnX()) {
-			this.y = this.calculateStratingPointOnX();
+		this.y = y;
+		System.out.println("Construct new Projective Point P("+x.toString()+"/"+y.toString()+") on curve "+this.curve);
+		
+		if(this.curve.foundStartingPointOnX(x)) {
+			this.y = this.curve.calculateStratingPointOnX(x);
 			System.out.println("Note: calculated starting point dependent on x="+this.x);
 			System.out.println("Now ("+this.x+"/"+this.y+") is a point on the elliptic curve "+this.curve);
+			if(!this.field.isEqual(this.y, y)) {
+				System.out.println("Somthing went wrong in calculation:");
+				System.out.println("y-Value "+y+" was given, but y-Value "+this.y+" was calculated!");
+			} else {
+				System.out.println("Calculation was great, since "+y+" is equal to "+this.y+" in "+this.field);
+			}
 		} else {
 			System.out.println("WARNING: No Point on curve found!");
 			this.y = y;
-		}
+		} 
 	}
 	
+	// don't use this constructor because of stack overflow!
 	protected ProjPoint() {
 		this.isProjectiveZero = true;
 	}
@@ -167,105 +176,6 @@ public class ProjPoint<T extends Number> {
 		}
 	}
 	
-	// solve weierstrass-gleichung = 0 to y
-	// hence y^2 + a1*x*y + a3*y -x^3 - a2*x^2 -a4*x -a6 = 0
-	// we get the discriminant D= 4*x^3 + b2*x^2 +2*b4*x + b6, where b2,b4,b6 are the same as in the elliptic curve
-	protected T calculateDiscriminantToWeierstrassIsZero() {
-		T discriminant;
-		this.curve.calculateBs();
-		T b2 = this.curve.getB2();
-		T b4 = this.curve.getB4();
-		T b6 = this.curve.getB6();
-		
-		T fourXPow3 = this.field.fourTimes(this.field.cube(this.x));
-		T b2xSquare = this.field.mult(b2, this.field.square(this.x));
-		T twoB4x = this.field.mult(this.field.twoTimes(b4),this.x);
-		
-		discriminant = this.field.add(this.field.add(fourXPow3, b2xSquare), this.field.add(twoB4x,b6));
-		return discriminant;
-	}
-	
-	// Weierstrass-Discriminant >= 0
-	public boolean hasSolutionsDependingOnX() {
-		return this.field.isGreaterEqualZero(this.calculateDiscriminantToWeierstrassIsZero());
-	}
-	
-	// y1/2 = -(a1*x+a3)/2 +- squareRootOf(discriminant)/2
-	public T calculateStratingPointOnX() {
-		if(!this.hasSolutionsDependingOnX()) {
-			System.out.println("WARNING: Weierstrass-Equation could not be solved to y");
-			System.out.println("Choose another x-value than "+this.getXCoordinate()+", since this has the Discriminant " + this.calculateDiscriminantToWeierstrassIsZero().toString());
-			return null;
-		}
-		if(this.field.isF2()) {
-			System.out.println("WARNING: You are in F2, where you cannot calculate the Discriminant");
-			return null;
-		}
-
-
-		T discriminant = this.calculateDiscriminantToWeierstrassIsZero();
-		T y;
-		
-		if(!this.field.hasSquareRoot(discriminant)) {
-			System.out.println("WARNING: Cannot find squareRoot("+discriminant+")!");
-			System.out.println("Note: Your are in "+ this.field);
-			return null;
-		}
-		
-		// idea: use quadratic completion to generalize to Fp and R
-		// the discriminant remains the same, since we get
-		// [2y + (a1*x + a3)]^2 =4*x^3 + b2*x^2 + 2*b4*x + b6
-		// solve to 2y + (a1*x + a3) =: l
-		if(this.field.isGreaterEqualZero(discriminant)) {
-			T l = this.field.squareRootOf(discriminant);
-			// as l = 2y + (a1*x + a3) we have that y = 1/2*(l - a1*x -a3)
-			T bracket = this.field.sub(this.field.sub(l, this.field.mult(this.curve.getA1(), x)),this.curve.getA3());
-			T two = this.field.get2();
-			T inverse2 = this.field.invertMult(two);
-			y = this.field.mult(inverse2, bracket);
-			return y;
-		} else {
-			System.out.println("WARNING: Discriminant "+discriminant+" is smaller than 0");
-			return null;
-		}
-	}
-	
-	public boolean foundStartingPointOnX() {
-		return this.calculateStratingPointOnX() != null;
-	}
-	
-	public ProjPoint<T> searchPointOnCurve() {
-		T tmpX = this.x;
-		T tmpY = this.y;
-		boolean found = false;
-		
-		for(int x : this.xSearchArray) {
-			this.x = this.field.getNewElement(x);
-			if(this.foundStartingPointOnX()) {
-				this.y = this.calculateStratingPointOnX();
-				System.out.print("Returning Point P("+this.getXCoordinate()+"/"+this.getYCoordinate()+") ");
-				System.out.println("on ellitpic curve  "+this.curve.toString());
-				return new ProjPoint<T>(this.curve, this.x, this.y);
-			}
-		}
-		
-		this.x = tmpX;
-		this.y = tmpY;
-		
-		System.out.println("WARNING. Unsuccessful search; returning NULL!");
-		return null;
-	}
-	
-	public void resetXandCalculateY(T x) {
-		this.x = x;
-		if(this.foundStartingPointOnX()) {
-			this.y = this.calculateStratingPointOnX();
-		} else {
-			this.y = null;
-			System.out.println("WARNING: Don't calculate, because y-value is NULL. Choose another x-value.");
-		}
-	}
-	
 	/*
 	public ProjPoint<T> findPointOnCurve(EllipticCurve<T> curve) {
 
@@ -302,7 +212,7 @@ public class ProjPoint<T extends Number> {
 	*/
 	
 	public String toString() {
-		String output = "("+this.getXCoordinate()+","+this.getYCoordinate()+")";
+		String output = "("+this.getXCoordinate()+"/"+this.getYCoordinate()+")";
 		return output;
 	}
 	

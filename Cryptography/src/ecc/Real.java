@@ -85,6 +85,12 @@ public class Real extends Field<Double> {
 		return Double.valueOf(1);
 	}
 
+	@Override
+	public boolean isEqual(Double x, Double y) {
+		// TODO Auto-generated method stub
+		return x.doubleValue() == y.doubleValue();
+	}
+
 
 
 	

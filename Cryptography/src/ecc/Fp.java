@@ -123,4 +123,10 @@ public class Fp extends Field<Integer> {
 		return this.NO_SOLUTION;
 	}
 
+	@Override
+	public boolean isEqual(Integer x, Integer y) {
+		// TODO Auto-generated method stub
+		return this.calcMod(x) == this.calcMod(y);
+	}
+
 }

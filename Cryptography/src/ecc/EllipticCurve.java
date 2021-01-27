@@ -25,6 +25,7 @@ public class EllipticCurve<T extends Number> {
 	
 	protected T discriminant;
 	
+	protected int[] xSearchArray = new int[] {-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,15,20,25,50,75,100,150,200};
 	
 	
 	public EllipticCurve(Field<T> field, T a1, T a2, T a3, T a4, T a6) {
@@ -90,6 +91,107 @@ public class EllipticCurve<T extends Number> {
 	public String toString() {
 		return "y^2 + "+this.getA1()+"*x*y + "+this.getA3()+"*y - x^3 - "+this.getA2()+"*x^2 - "+this.getA4()+"*x - "+this.getA6()+" = 0"; 
 	}
+	
+
+	// solve weierstrass-gleichung = 0 to y
+	// hence y^2 + a1*x*y + a3*y -x^3 - a2*x^2 -a4*x -a6 = 0
+	// we get the discriminant D= 4*x^3 + b2*x^2 +2*b4*x + b6, where b2,b4,b6 are the same as in the elliptic curve
+	protected T calculateDiscriminantToWeierstrassIsZero(T x) {
+		T yToZeroDiscriminant;
+		this.calculateBs();
+		T b2 = this.getB2();
+		T b4 = this.getB4();
+		T b6 = this.getB6();
+		
+		T fourXPow3 = this.field.fourTimes(this.field.cube(x));
+		T b2xSquare = this.field.mult(b2, this.field.square(x));
+		T twoB4x = this.field.mult(this.field.twoTimes(b4),x);
+		
+		yToZeroDiscriminant = this.field.add(this.field.add(fourXPow3, b2xSquare), this.field.add(twoB4x,b6));
+		return yToZeroDiscriminant;
+	}
+	
+	// Weierstrass-Discriminant >= 0
+	public boolean hasSolutionsDependingOnX(T x) {
+		return this.field.isGreaterEqualZero(this.calculateDiscriminantToWeierstrassIsZero(x));
+	}
+	
+	// y1/2 = -(a1*x+a3)/2 +- squareRootOf(discriminant)/2
+	public T calculateStratingPointOnX(T x) {
+		if(!this.hasSolutionsDependingOnX(x)) {
+			System.out.println("WARNING: Weierstrass-Equation could not be solved to y");
+			System.out.println("Choose another x-value than "+x+", since this has the Discriminant " + this.calculateDiscriminantToWeierstrassIsZero(x).toString());
+			return null;
+		}
+		if(this.field.isF2()) {
+			System.out.println("WARNING: You are in F2, where you cannot calculate the Discriminant");
+			return null;
+		}
+
+
+		T discriminant = this.calculateDiscriminantToWeierstrassIsZero(x);
+		T y;
+		
+		if(!this.field.hasSquareRoot(discriminant)) {
+			System.out.println("WARNING: Cannot find squareRoot("+discriminant+")!");
+			System.out.println("Note: Your are in "+ this.field);
+			return null;
+		}
+		
+		// idea: use quadratic completion to generalize to Fp and R
+		// the discriminant remains the same, since we get
+		// [2y + (a1*x + a3)]^2 =4*x^3 + b2*x^2 + 2*b4*x + b6
+		// solve to 2y + (a1*x + a3) =: l
+		if(this.field.isGreaterEqualZero(discriminant)) {
+			T l = this.field.squareRootOf(discriminant);
+			// as l = 2y + (a1*x + a3) we have that y = 1/2*(l - a1*x -a3)
+			T bracket = this.field.sub(this.field.sub(l, this.field.mult(this.getA1(), x)),this.getA3());
+			T two = this.field.get2();
+			T inverse2 = this.field.invertMult(two);
+			y = this.field.mult(inverse2, bracket);
+			return y;
+		} else {
+			System.out.println("WARNING: Discriminant "+discriminant+" is smaller than 0");
+			return null;
+		}
+	}
+	
+	public boolean foundStartingPointOnX(T x) {
+		return this.calculateStratingPointOnX(x) != null;
+	}
+	
+	public ProjPoint<T> searchPoint() throws Exception {
+
+		boolean found = false;
+		
+		for(int i : this.xSearchArray) {
+			T x = this.field.getNewElement(i);
+			System.out.println("Try x-value "+x);
+			if(this.foundStartingPointOnX(x)) {
+				T y = this.calculateStratingPointOnX(x);
+				System.out.print("Returning Point P("+x+"/"+y+") ");
+				System.out.println("on ellitpic curve  "+this.toString());
+				return new ProjPoint<T>(this, x, y);
+			} else {
+				System.out.println("No Point found");
+			}
+		}
+		
+		throw new NoPointFoundException("Error: No point found on ellitpic curve "+this.toString());
+	}
+	
+	public T resetXandCalculateY(T x) {
+		T y;
+		if(this.foundStartingPointOnX(x)) {
+			y = this.calculateStratingPointOnX(x);
+		} else {
+			y = null;
+			System.out.println("WARNING: Don't calculate, because y-value is NULL. Choose another x-value.");
+		}
+		return y;
+	}
+	
+	
 	
 	public Field<T> getField() {
 		return field;
