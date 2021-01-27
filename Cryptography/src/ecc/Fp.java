@@ -55,9 +55,9 @@ public class Fp extends Field<Integer> {
 	}
 
 	@Override
-	public Integer getNewElement() {
+	public Integer getNewElement(int i) {
 		// TODO Auto-generated method stub
-		return Integer.valueOf(1);
+		return Integer.valueOf(i);
 	}
 
 	@Override

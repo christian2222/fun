@@ -84,6 +84,13 @@ public class EllipticCurve<T extends Number> {
 		return !this.hasZeroDiscriminant();
 	}
 	
+	/*
+	 * y^2 + a1*x*y + a3*y -x^3 - a2*x^2 -a4*x -a6 = 0
+	 */
+	public String toString() {
+		return "y^2 + "+this.getA1()+"*x*y + "+this.getA3()+"*y - x^3 - "+this.getA2()+"*x^2 - "+this.getA4()+"*x - "+this.getA6()+" = 0"; 
+	}
+	
 	public Field<T> getField() {
 		return field;
 	}

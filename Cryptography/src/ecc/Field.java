@@ -2,7 +2,7 @@ package ecc;
 
 public abstract class Field<T extends Number> {
 
-	public abstract T getNewElement();
+	public abstract T getNewElement(int i);
 	
 	public abstract T add(T x, T y);
 	

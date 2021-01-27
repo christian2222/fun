@@ -11,6 +11,8 @@ public class ProjPoint<T extends Number> {
 	protected Field<T> field;
 	protected boolean isProjectiveZero = false;
 	
+	protected int[] xSearchArray = new int[] {-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,15,20,25,50,75,100,150,200};
+	
 	public ProjPoint(EllipticCurve<T> curve, T x, T y) {
 		this.isProjectiveZero = false;
 		this.curve = curve;
@@ -19,7 +21,7 @@ public class ProjPoint<T extends Number> {
 		if(this.foundStartingPointOnX()) {
 			this.y = this.calculateStratingPointOnX();
 			System.out.println("Note: calculated starting point dependent on x="+this.x);
-			System.out.println("Now (x,y) is a point on the elliptic curve");
+			System.out.println("Now ("+this.x+"/"+this.y+") is a point on the elliptic curve "+this.curve);
 		} else {
 			System.out.println("WARNING: No Point on curve found!");
 			this.y = y;
@@ -185,14 +187,14 @@ public class ProjPoint<T extends Number> {
 	
 	// Weierstrass-Discriminant >= 0
 	public boolean hasSolutionsDependingOnX() {
-		return !this.field.isGreaterEqualZero(this.calculateDiscriminantToWeierstrassIsZero());
+		return this.field.isGreaterEqualZero(this.calculateDiscriminantToWeierstrassIsZero());
 	}
 	
 	// y1/2 = -(a1*x+a3)/2 +- squareRootOf(discriminant)/2
 	public T calculateStratingPointOnX() {
 		if(!this.hasSolutionsDependingOnX()) {
 			System.out.println("WARNING: Weierstrass-Equation could not be solved to y");
-			System.out.println("Choose another x-value");
+			System.out.println("Choose another x-value than "+this.getXCoordinate()+", since this has the Discriminant " + this.calculateDiscriminantToWeierstrassIsZero().toString());
 			return null;
 		}
 		if(this.field.isF2()) {
@@ -218,7 +220,9 @@ public class ProjPoint<T extends Number> {
 			T l = this.field.squareRootOf(discriminant);
 			// as l = 2y + (a1*x + a3) we have that y = 1/2*(l - a1*x -a3)
 			T bracket = this.field.sub(this.field.sub(l, this.field.mult(this.curve.getA1(), x)),this.curve.getA3());
-			y = this.field.mult(this.field.invertMult(this.field.get2()), bracket);
+			T two = this.field.get2();
+			T inverse2 = this.field.invertMult(two);
+			y = this.field.mult(inverse2, bracket);
 			return y;
 		} else {
 			System.out.println("WARNING: Discriminant "+discriminant+" is smaller than 0");
@@ -229,6 +233,73 @@ public class ProjPoint<T extends Number> {
 	public boolean foundStartingPointOnX() {
 		return this.calculateStratingPointOnX() != null;
 	}
+	
+	public ProjPoint<T> searchPointOnCurve() {
+		T tmpX = this.x;
+		T tmpY = this.y;
+		boolean found = false;
+		
+		for(int x : this.xSearchArray) {
+			this.x = this.field.getNewElement(x);
+			if(this.foundStartingPointOnX()) {
+				this.y = this.calculateStratingPointOnX();
+				System.out.print("Returning Point P("+this.getXCoordinate()+"/"+this.getYCoordinate()+") ");
+				System.out.println("on ellitpic curve  "+this.curve.toString());
+				return new ProjPoint<T>(this.curve, this.x, this.y);
+			}
+		}
+		
+		this.x = tmpX;
+		this.y = tmpY;
+		
+		System.out.println("WARNING. Unsuccessful search; returning NULL!");
+		return null;
+	}
+	
+	public void resetXandCalculateY(T x) {
+		this.x = x;
+		if(this.foundStartingPointOnX()) {
+			this.y = this.calculateStratingPointOnX();
+		} else {
+			this.y = null;
+			System.out.println("WARNING: Don't calculate, because y-value is NULL. Choose another x-value.");
+		}
+	}
+	
+	/*
+	public ProjPoint<T> findPointOnCurve(EllipticCurve<T> curve) {
+
+		T tmpX = this.x;
+		T tmpY = this.y;
+		EllipticCurve<T> ec = this.curve;
+		
+		this.curve = curve;
+		boolean found = false;
+		
+		for(int x : this.xBigSearchArray) {
+			this.x = this.field.getNewElement(x);
+			if(this.foundStartingPointOnX()) {
+				this.y = this.calculateStratingPointOnX();
+				System.out.print("Found Point P("+this.getXCoordinate()+"/"+this.getYCoordinate()+") ");
+				System.out.println("on ellitpic curve  "+this.curve.toString());
+				found = true;
+				return new ProjPoint<T>(this.curve, this.x, this.y);
+			}
+		}
+		
+		if(!found) {
+			System.out.println("WARNING: Search for a point P on the elliptic curve "+this.curve+" was not successful");
+			System.out.println("WARNING: No values initialized!");
+		}
+		
+		this.curve = ec;
+		this.x = tmpX;
+		this.y = tmpY;
+		
+		return this;
+
+	}
+	*/
 	
 	public String toString() {
 		String output = "("+this.getXCoordinate()+","+this.getYCoordinate()+")";

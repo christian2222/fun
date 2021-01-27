@@ -3,9 +3,9 @@ package ecc;
 public class Real extends Field<Double> {
 
 	@Override
-	public Double getNewElement() {
+	public Double getNewElement(int i) {
 		// TODO Auto-generated method stub
-		return Double.valueOf(1);
+		return Double.valueOf(i);
 	}
 
 	@Override
@@ -60,7 +60,7 @@ public class Real extends Field<Double> {
 	@Override
 	public Double get2() {
 		// TODO Auto-generated method stub
-		return null;
+		return Double.valueOf(2);
 	}
 
 	@Override
