@@ -27,6 +27,10 @@ public class EllipticCurve<T extends Number> {
 	
 	protected int[] xSearchArray = new int[] {-5,-4,-3,-2,-1,0,1,2,3,4,5,6,7,8,9,10,15,20,25,50,75,100,150,200};
 	
+	// y-values for solving weierstrass-equation
+	protected T y1;
+	protected T y2;
+	
 	
 	public EllipticCurve(Field<T> field, T a1, T a2, T a3, T a4, T a6) {
 		super();
@@ -117,7 +121,7 @@ public class EllipticCurve<T extends Number> {
 	}
 	
 	// y1/2 = -(a1*x+a3)/2 +- squareRootOf(discriminant)/2
-	public T calculateStratingPointOnX(T x) {
+	public T calculateStartingPointsOnX(T x) {
 		if(!this.hasSolutionsDependingOnX(x)) {
 			System.out.println("WARNING: Weierstrass-Equation could not be solved to y");
 			System.out.println("Choose another x-value than "+x+", since this has the Discriminant " + this.calculateDiscriminantToWeierstrassIsZero(x).toString());
@@ -143,12 +147,22 @@ public class EllipticCurve<T extends Number> {
 		// [2y + (a1*x + a3)]^2 =4*x^3 + b2*x^2 + 2*b4*x + b6
 		// solve to 2y + (a1*x + a3) =: l
 		if(this.field.isGreaterEqualZero(discriminant)) {
-			T l = this.field.squareRootOf(discriminant);
+			// Note: l = +/- squareRoot(discriminant)
+			T l1 = this.field.squareRootOf(discriminant);
+			T l2 = this.field.invertAdd(l1);
 			// as l = 2y + (a1*x + a3) we have that y = 1/2*(l - a1*x -a3)
-			T bracket = this.field.sub(this.field.sub(l, this.field.mult(this.getA1(), x)),this.getA3());
+			T bracket = this.field.sub(this.field.sub(l1, this.field.mult(this.getA1(), x)),this.getA3());
 			T two = this.field.get2();
 			T inverse2 = this.field.invertMult(two);
 			y = this.field.mult(inverse2, bracket);
+			this.y1 = y;
+			// calculate the same with l2
+			bracket = this.field.sub(this.field.sub(l2, this.field.mult(this.getA1(), x)),this.getA3());
+			two = this.field.get2();
+			inverse2 = this.field.invertMult(two);
+			y = this.field.mult(inverse2, bracket);
+			this.y2 = y;
+			
 			return y;
 		} else {
 			System.out.println("WARNING: Discriminant "+discriminant+" is smaller than 0");
@@ -156,8 +170,18 @@ public class EllipticCurve<T extends Number> {
 		}
 	}
 	
+	public T getFirstStartingPointOnX(T x) {
+		this.calculateStartingPointsOnX(x);
+		return this.y1;
+	}
+	
+	public T getSecondStartingPointOnX(T x) {
+		this.calculateStartingPointsOnX(x);
+		return this.y2;
+	}
+	
 	public boolean foundStartingPointOnX(T x) {
-		return this.calculateStratingPointOnX(x) != null;
+		return this.calculateStartingPointsOnX(x) != null;
 	}
 	
 	public ProjPoint<T> searchPoint() throws Exception {
@@ -168,7 +192,7 @@ public class EllipticCurve<T extends Number> {
 			T x = this.field.getNewElement(i);
 			System.out.println("Try x-value "+x);
 			if(this.foundStartingPointOnX(x)) {
-				T y = this.calculateStratingPointOnX(x);
+				T y = this.calculateStartingPointsOnX(x);
 				System.out.print("Returning Point P("+x+"/"+y+") ");
 				System.out.println("on ellitpic curve  "+this.toString());
 				return new ProjPoint<T>(this, x, y);
@@ -183,7 +207,7 @@ public class EllipticCurve<T extends Number> {
 	public T resetXandCalculateY(T x) {
 		T y;
 		if(this.foundStartingPointOnX(x)) {
-			y = this.calculateStratingPointOnX(x);
+			y = this.calculateStartingPointsOnX(x);
 		} else {
 			y = null;
 			System.out.println("WARNING: Don't calculate, because y-value is NULL. Choose another x-value.");

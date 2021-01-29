@@ -2,6 +2,9 @@ package ecc;
 
 public class Real extends Field<Double> {
 
+	
+	public double precision = 1e-10;
+	
 	@Override
 	public Double getNewElement(int i) {
 		// TODO Auto-generated method stub
@@ -88,7 +91,7 @@ public class Real extends Field<Double> {
 	@Override
 	public boolean isEqual(Double x, Double y) {
 		// TODO Auto-generated method stub
-		return x.doubleValue() == y.doubleValue();
+		return Math.abs(x.doubleValue() - y.doubleValue()) < this.precision;
 	}
 
 

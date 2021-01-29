@@ -21,14 +21,27 @@ public class ProjPoint<T extends Number> {
 		System.out.println("Construct new Projective Point P("+x.toString()+"/"+y.toString()+") on curve "+this.curve);
 		
 		if(this.curve.foundStartingPointOnX(x)) {
-			this.y = this.curve.calculateStratingPointOnX(x);
+			this.curve.calculateStartingPointsOnX(x);
+			T y1 = this.curve.getFirstStartingPointOnX(x);
+			T y2 = this.curve.getSecondStartingPointOnX(x);
 			System.out.println("Note: calculated starting point dependent on x="+this.x);
-			System.out.println("Now ("+this.x+"/"+this.y+") is a point on the elliptic curve "+this.curve);
-			if(!this.field.isEqual(this.y, y)) {
+			System.out.println("Now ("+this.x+"/"+y1+") is a point on the elliptic curve "+this.curve);
+			System.out.println("And ("+this.x+"/"+y2+") is a point on the elliptic curve "+this.curve);
+			
+			if(!this.field.isEqual(y, y1) && !this.field.isEqual(y, y2)) {
 				System.out.println("Somthing went wrong in calculation:");
-				System.out.println("y-Value "+y+" was given, but y-Value "+this.y+" was calculated!");
+				System.out.println("y-Value "+y+" was given, but the calculated y-Values were  "+y1+" and "+y2);
+				System.out.println("with differences "+this.field.sub(y, y1)+" and "+this.field.sub(y, y2));
 			} else {
-				System.out.println("Calculation was great, since "+y+" is equal to "+this.y+" in "+this.field);
+				if(this.field.isEqual(y, y1)) {
+					System.out.println("Calculation was great, since "+y+" is equal to "+y1+" in "+this.field);
+					this.y = y1;
+				}
+				if(this.field.isEqual(y, y2)) {
+					System.out.println("Calculation was great, since "+y+" is equal to "+y2+" in "+this.field);
+					this.y = y2;
+				}
+				// Now we have all cases because of deMorgan
 			}
 		} else {
 			System.out.println("WARNING: No Point on curve found!");
@@ -147,9 +160,9 @@ public class ProjPoint<T extends Number> {
 				numerator = this.field.sub(this.field.add(numerator, a4),this.field.mult(a1, y1));
 				// lambda = (3*x1*x1 + 2*a2*x1 + a4 - a1*y1) * invert(2*y1 + a1*x1 + a3);
 				lambda = this.field.div(numerator,denominator);
-				// nue = (-x1*x1 + a4*x1 + 2*a6 - a3*y1) * invert(2*y1 + a1*x1 + a3); 
+				// nue = (-x1^3 + a4*x1 + 2*a6 - a3*y1) * invert(2*y1 + a1*x1 + a3); 
 				numerator = this.field.add(twoA6,this.field.mult(a4, x1));
-				numerator = this.field.sub(this.field.sub(numerator, this.field.square(x1)),this.field.mult(a3, y1));
+				numerator = this.field.sub(this.field.sub(numerator, this.field.cube(x1)),this.field.mult(a3, y1));
 				nue = this.field.div(numerator, denominator);
 			} else { // x1!=x2
 				// denominator = x2-x1
