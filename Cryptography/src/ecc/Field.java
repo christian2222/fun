@@ -65,7 +65,7 @@ public abstract class Field<T extends Number> {
 	}
 	
 	protected T twentySevenTimes(T x) {
-		return this.mult(this.nineTimes(x), this.threeTimes(x));
+		return this.nineTimes(this.threeTimes(x));
 	}
 	
 	protected T square(T x) {

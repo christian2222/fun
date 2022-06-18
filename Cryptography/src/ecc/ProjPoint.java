@@ -3,8 +3,6 @@ package ecc;
 
 public class ProjPoint<T extends Number> {
 
-	public final ProjPoint<T> ZERO = null;
-	
 	protected EllipticCurve<T> curve;
 	protected T x;
 	protected T y;
@@ -49,8 +47,7 @@ public class ProjPoint<T extends Number> {
 		} 
 	}
 	
-	// don't use this constructor because of stack overflow!
-	protected ProjPoint() {
+	public ProjPoint() {
 		this.isProjectiveZero = true;
 	}
 	
@@ -118,11 +115,12 @@ public class ProjPoint<T extends Number> {
 		return isInverse;
 	}
 	
+
 	public ProjPoint<T> add(ProjPoint<T> q) {
 		if(this.isProjectiveZero()) return q;
 		// hence from now on p=(x1,x2)!= ZERO in proj space
 		if(!q.isProjectiveZero()) {
-			if(this.isProjectiveInverse(q)) return this.ZERO;
+			if(this.isProjectiveInverse(q)) return ProjSpace.PROJ_ZERO;
 			// else do projective addition in R^2 with points
 			// p=this=(x1,y1) and q=(x2,y2)
 			// here were in the case p!= ZERO and q != ZERO and p++q != ZERO in projective space

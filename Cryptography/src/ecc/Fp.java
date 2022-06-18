@@ -119,7 +119,7 @@ public class Fp extends Field<Integer> {
 		if(this.hasSquareRoot(x)) {
 			return TonelliShanks.runAlgorithm(x, this.prime);			
 		}
-		System.out.println("WRNING: No squareRootOf("+x+") modulo "+this.prime+" found!");
+		System.out.println("WARNING: No squareRootOf("+x+") modulo "+this.prime+" found!");
 		return this.NO_SOLUTION;
 	}
 

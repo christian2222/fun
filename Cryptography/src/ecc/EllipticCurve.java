@@ -241,22 +241,26 @@ public class EllipticCurve<T extends Number> {
 		return a6;
 	}
 
+	
 	public T getB2() {
+		this.calculateBs();
 		return b2;
 	}
 
-
 	public T getB4() {
+		this.calculateBs();
 		return b4;
 	}
 
 
 	public T getB6() {
+		this.calculateBs();
 		return b6;
 	}
 
 
 	public T getB8() {
+		this.calculateBs();
 		return b8;
 	}
 
